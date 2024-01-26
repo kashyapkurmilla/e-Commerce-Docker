@@ -6,11 +6,11 @@ services:
       context: .
       dockerfile: Dockerfile.python
     ports:
-      - 8080:8080
+      - 8082:8082
     depends_on:
       - mongo
     environment:
-      - MONGO_URI=mongodb://mongo:27017/your_database_name
+      - MONGO_URI=mongodb://mongo:27017/mydatabase
 
   mongo:
     build:
@@ -34,6 +34,16 @@ services:
       - ME_CONFIG_MONGODB_SERVER=mongo
     ports:
       - 8081:8081
+
+  mongodb-check:
+    build:
+      context: .
+      dockerfile: Dockerfile.python
+    command: python app.py
+    ports:
+      - 8083:8082
+    depends_on:
+      - mongo
 
 volumes:
   product-data:
