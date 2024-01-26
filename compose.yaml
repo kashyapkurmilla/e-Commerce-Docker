@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  python-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.python
+    ports:
+      - 8080:8080
+    depends_on:
+      - mongo
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/your_database_name
+
+  mongo:
+    build:
+      context: .
+      dockerfile: Dockerfile.mongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=kashyap
+      - MONGO_INITDB_ROOT_PASSWORD=password
+    ports:
+      - "27017:27017"
+    volumes:
+      - product-data:/data/db
+
+  mongo-express:
+    build:
+      context: .
+      dockerfile: Dockerfile.mongoexpress
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=kashyap
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=password
+      - ME_CONFIG_MONGODB_SERVER=mongo
+    ports:
+      - 8081:8081
+
+volumes:
+  product-data:
+    driver: local
