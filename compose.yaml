@@ -34,17 +34,7 @@ services:
       - ME_CONFIG_MONGODB_SERVER=mongo
     ports:
       - 8081:8081
-
-  mongodb-check:
-    build:
-      context: .
-      dockerfile: Dockerfile.python
-    command: python app.py
-    ports:
-      - 8083:8082
-    depends_on:
-      - mongo
-
+      
 volumes:
   product-data:
     driver: local
