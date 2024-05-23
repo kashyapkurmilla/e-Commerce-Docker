@@ -1,0 +1,382 @@
+[
+    {
+      "_id": {"$oid": "664a0784df83da3fa0805fd6"},
+      "name": "Harry Potter",
+      "author": "J K Rowling",
+      "skus": [
+        {"sku": "HPH", "Price": 300, "quantity": 200, "feature": "hard cover"},
+        {"sku": "HPP", "Price": 100, "quantity": 200, "feature": "paperback"}
+      ]
+    },
+    {
+      "_id": {"$oid": "664aebd5791683f82b8721b3"},
+      "name": "The Lord of the Rings",
+      "author": "J.R.R. Tolkien",
+      "skus": [
+        {"sku": "LOTRH", "Price": 350, "quantity": 150, "feature": "hard cover"},
+        {"sku": "LOTRP", "Price": 120, "quantity": 300, "feature": "paperback"}
+      ]
+    },
+    {
+      "_id": {"$oid": "664aebf1791683f82b8721b5"},
+      "name": "A Song of Ice and Fire",
+      "author": "George R.R. Martin",
+      "skus": [
+        {"sku": "SOIFH", "Price": 400, "quantity": 180, "feature": "hard cover"},
+        {"sku": "SOIFP", "Price": 150, "quantity": 250, "feature": "paperback"}
+      ]
+    },
+    {
+      "_id": {"$oid": "664aec08791683f82b8721b7"},
+      "name": "The Chronicles of Narnia",
+      "author": "C.S. Lewis",
+      "skus": [
+        {"sku": "NARNH", "Price": 320, "quantity": 100, "feature": "hard cover"},
+        {"sku": "NARNP", "Price": 110, "quantity": 400, "feature": "paperback"}
+      ]
+    },
+    {
+      "_id": {"$oid": "664aec08791683f82b8721b8"},
+      "name": "The Hobbit",
+      "author": "J.R.R. Tolkien",
+      "skus": [
+        {"sku": "HOBH", "Price": 300, "quantity": 180, "feature": "hard cover"},
+        {"sku": "HOBP", "Price": 100, "quantity": 250, "feature": "paperback"}
+      ]
+    },
+    {
+      "_id": {"$oid": "664aec08791683f82b8721b9"},
+      "name": "1984",
+      "author": "George Orwell",
+      "skus": [
+        {"sku": "1984H", "Price": 250, "quantity": 100, "feature": "hard cover"},
+        {"sku": "1984P", "Price": 80, "quantity": 150, "feature": "paperback"}
+      ]
+    },
+    {
+      "_id": {"$oid": "664aec08791683f82b8721ba"},
+      "name": "Animal Farm",
+      "author": "George Orwell",
+      "skus": [
+        {"sku": "AFH", "Price": 200, "quantity": 120, "feature": "hard cover"},
+        {"sku": "AFP", "Price": 60, "quantity": 180, "feature": "paperback"}
+      ]
+    },
+    {
+      "_id": {"$oid": "664aec08791683f82b8721bb"},
+      "name": "The Catcher in the Rye",
+      "author": "J.D. Salinger",
+      "skus": [
+        {"sku": "CRH", "Price": 270, "quantity": 140, "feature": "hard cover"},
+        {"sku": "CRP", "Price": 90, "quantity": 210, "feature": "paperback"}
+      ]
+    },
+    {
+      "_id": {"$oid": "664aec08791683f82b8721bc"},
+      "name": "To Kill a Mockingbird",
+      "author": "Harper Lee",
+      "skus": [
+        {"sku": "TKMH", "Price": 320, "quantity": 200, "feature": "hard cover"},
+        {"sku": "TKMP", "Price": 120, "quantity": 250, "feature": "paperback"}
+      ]
+    },
+    {
+      "_id": {"$oid": "664aec08791683f82b8721bd"},
+      "name": "Pride and Prejudice",
+      "author": "Jane Austen",
+      "skus": [
+        {"sku": "PPH", "Price": 280, "quantity": 180, "feature": "hard cover"},
+        {"sku": "PPP", "Price": 90, "quantity": 300, "feature": "paperback"}
+      ]
+    },
+    {
+      "_id": {"$oid": "664aec08791683f82b8721be"},
+      "name": "Moby Dick",
+      "author": "Herman Melville",
+      "skus": [
+        {"sku": "MDH", "Price": 350, "quantity": 120, "feature": "hard cover"},
+        {"sku": "MDP", "Price": 110, "quantity": 220, "feature": "paperback"}
+      ]
+    },
+    {
+      "_id": {"$oid": "664aec08791683f82b8721bf"},
+      "name": "War and Peace",
+      "author": "Leo Tolstoy",
+      "skus": [
+        {"sku": "WAPH", "Price": 400, "quantity": 100, "feature": "hard cover"},
+        {"sku": "WAPP", "Price": 150, "quantity": 180, "feature": "paperback"}
+      ]
+    },
+    {
+      "_id": {"$oid": "664aec08791683f82b8721c0"},
+      "name": "Crime and Punishment",
+      "author": "Fyodor Dostoevsky",
+      "skus": [
+        {"sku": "CPH", "Price": 370, "quantity": 110, "feature": "hard cover"},
+        {"sku": "CPP", "Price": 120, "quantity": 200, "feature": "paperback"}
+      ]
+    },
+    {
+      "_id": {"$oid": "664aec08791683f82b8721c1"},
+      "name": "Great Expectations",
+      "author": "Charles Dickens",
+      "skus": [
+        {"sku": "GEH", "Price": 340, "quantity": 150, "feature": "hard cover"},
+        {"sku": "GEP", "Price": 110, "quantity": 250, "feature": "paperback"}
+      ]
+    },
+    {
+      "_id": {"$oid": "664aec08791683f82b8721c2"},
+      "name": "Ulysses",
+      "author": "James Joyce",
+      "skus": [
+        {"sku": "UH", "Price": 380, "quantity": 90, "feature": "hard cover"},
+        {"sku": "UP", "Price": 140, "quantity": 220, "feature": "paperback"}
+      ]
+    },
+    {
+      "_id": {"$oid": "664aec08791683f82b8721c3"},
+      "name": "Jane Eyre",
+      "author": "Charlotte Brontë",
+      "skus": [
+        {"sku": "JEH", "Price": 310, "quantity": 130, "feature": "hard cover"},
+        {"sku": "JEP", "Price": 100, "quantity": 210, "feature": "paperback"}
+      ]
+    },
+    {
+      "_id": {"$oid": "664aec08791683f82b8721c4"},
+      "name": "Wuthering Heights",
+      "author": "Emily Brontë",
+      "skus": [
+        {"sku": "WHH", "Price": 330, "quantity": 140, "feature": "hard cover"},
+        {"sku": "WHP", "Price": 120, "quantity": 240, "feature": "paperback"}
+      ]
+    },
+    {
+      "_id": {"$oid": "664aec08791683f82b8721c5"},
+      "name": "The Odyssey",
+      "author": "Homer",
+      "skus": [
+        {"sku": "OH", "Price": 360, "quantity": 100, "feature": "hard cover"},
+        {"sku": "OP", "Price": 130, "quantity": 210, "feature": "paperback"}
+      ]
+    },
+    {
+      "_id": {"$oid": "664aec08791683f82b8721c6"},
+      "name": "The Iliad",
+      "author": "Homer",
+      "skus": [
+        {"sku": "IH", "Price": 360, "quantity": 110, "feature": "hard cover"},
+        {"sku": "IP", "Price": 130, "quantity": 220, "feature": "paperback"}
+      ]
+    },
+    {
+      "_id": {"$oid": "664aec08791683f82b8721c7"},
+      "name": "Frankenstein",
+      "author": "Mary Shelley",
+      "skus": [
+        {"sku": "FH", "Price": 290, "quantity": 150, "feature": "hard cover"},
+        {"sku": "FP", "Price": 100, "quantity": 250, "feature": "paperback"}
+      ]
+    },
+    {
+      "_id": {"$oid": "664aec08791683f82b8721c8"},
+      "name": "Dracula",
+      "author": "Bram Stoker",
+      "skus": [
+        {"sku": "DH", "Price": 300, "quantity": 140, "feature": "hard cover"},
+        {"sku": "DP", "Price": 100, "quantity": 230, "feature": "paperback"}
+      ]
+    },
+    {
+      "_id": {"$oid": "664aec08791683f82b8721c9"},
+      "name": "The Divine Comedy",
+      "author": "Dante Alighieri",
+      "skus": [
+        {"sku": "DCH", "Price": 400, "quantity": 90, "feature": "hard cover"},
+        {"sku": "DCP", "Price": 150, "quantity": 170, "feature": "paperback"}
+      ]
+    },
+    {
+      "_id": {"$oid": "664aec08791683f82b8721ca"},
+      "name": "Alice's Adventures in Wonderland",
+      "author": "Lewis Carroll",
+      "skus": [
+        {"sku": "AAWH", "Price": 320, "quantity": 130, "feature": "hard cover"},
+        {"sku": "AAWP", "Price": 110, "quantity": 240, "feature": "paperback"}
+      ]
+    },
+    {
+        "_id": {"$oid": "664aec08791683f82b8721cb"},
+        "name": "Fifty Shades of Grey",
+        "author": "E.L. James",
+        "skus": [
+        {"sku": "FSGH", "Price": 280, "quantity": 150, "feature": "hard cover"},
+        {"sku": "FSGP", "Price": 90, "quantity": 300, "feature": "paperback"}
+        ]
+    },
+    {
+        "_id": {"$oid": "664aec08791683f82b8721cc"},
+        "name": "Bared to You",
+        "author": "Sylvia Day",
+        "skus": [
+        {"sku": "BTH", "Price": 260, "quantity": 130, "feature": "hard cover"},
+        {"sku": "BTP", "Price": 80, "quantity": 250, "feature": "paperback"}
+        ]
+    },
+    {
+        "_id": {"$oid": "664aec08791683f82b8721cd"},
+        "name": "Beautiful Disaster",
+        "author": "Jamie McGuire",
+        "skus": [
+        {"sku": "BDH", "Price": 240, "quantity": 140, "feature": "hard cover"},
+        {"sku": "BDP", "Price": 85, "quantity": 270, "feature": "paperback"}
+        ]
+    },
+    {
+        "_id": {"$oid": "664aec08791683f82b8721ce"},
+        "name": "Twilight",
+        "author": "Stephenie Meyer",
+        "skus": [
+        {"sku": "TWH", "Price": 320, "quantity": 180, "feature": "hard cover"},
+        {"sku": "TWP", "Price": 110, "quantity": 350, "feature": "paperback"}
+        ]
+    },
+    {
+        "_id": {"$oid": "664aec08791683f82b8721cf"},
+        "name": "After",
+        "author": "Anna Todd",
+        "skus": [
+        {"sku": "AFH", "Price": 270, "quantity": 150, "feature": "hard cover"},
+        {"sku": "AFP", "Price": 90, "quantity": 300, "feature": "paperback"}
+        ]
+    },
+    {
+        "_id": {"$oid": "664aec08791683f82b8721d0"},
+        "name": "The Siren",
+        "author": "Tiffany Reisz",
+        "skus": [
+        {"sku": "TSH", "Price": 250, "quantity": 130, "feature": "hard cover"},
+        {"sku": "TSP", "Price": 85, "quantity": 220, "feature": "paperback"}
+        ]
+    },
+    {
+        "_id": {"$oid": "664aec08791683f82b8721d1"},
+        "name": "Gabriel's Inferno",
+        "author": "Sylvain Reynard",
+        "skus": [
+        {"sku": "GIH", "Price": 300, "quantity": 160, "feature": "hard cover"},
+        {"sku": "GIP", "Price": 100, "quantity": 280, "feature": "paperback"}
+        ]
+    },
+    {
+        "_id": {"$oid": "664aec08791683f82b8721d2"},
+        "name": "This Man",
+        "author": "Jodi Ellen Malpas",
+        "skus": [
+        {"sku": "TMH", "Price": 290, "quantity": 140, "feature": "hard cover"},
+        {"sku": "TMP", "Price": 95, "quantity": 250, "feature": "paperback"}
+        ]
+    },
+    {
+        "_id": {"$oid": "664aec08791683f82b8721d3"},
+        "name": "Beautiful Bastard",
+        "author": "Christina Lauren",
+        "skus": [
+        {"sku": "BBH", "Price": 260, "quantity": 150, "feature": "hard cover"},
+        {"sku": "BBP", "Price": 85, "quantity": 230, "feature": "paperback"}
+        ]
+    },
+    {
+        "_id": {"$oid": "664aec08791683f82b8721d4"},
+        "name": "The Claiming of Sleeping Beauty",
+        "author": "Anne Rice",
+        "skus": [
+        {"sku": "CSBH", "Price": 280, "quantity": 120, "feature": "hard cover"},
+        {"sku": "CSBP", "Price": 90, "quantity": 210, "feature": "paperback"}
+        ]
+    },
+    {
+        "_id": {"$oid": "664aec08791683f82b8721d5"},
+        "name": "The Mister",
+        "author": "E.L. James",
+        "skus": [
+        {"sku": "TMH", "Price": 300, "quantity": 140, "feature": "hard cover"},
+        {"sku": "TMP", "Price": 100, "quantity": 240, "feature": "paperback"}
+        ]
+    },
+    {
+        "_id": {"$oid": "664aec08791683f82b8721d6"},
+        "name": "Tangled",
+        "author": "Emma Chase",
+        "skus": [
+        {"sku": "TGH", "Price": 270, "quantity": 150, "feature": "hard cover"},
+        {"sku": "TGP", "Price": 90, "quantity": 250, "feature": "paperback"}
+        ]
+    },
+    {
+        "_id": {"$oid": "664aec08791683f82b8721d7"},
+        "name": "The Deal",
+        "author": "Elle Kennedy",
+        "skus": [
+        {"sku": "TDH", "Price": 280, "quantity": 160, "feature": "hard cover"},
+        {"sku": "TDP", "Price": 95, "quantity": 270, "feature": "paperback"}
+        ]
+    },
+    {
+        "_id": {"$oid": "664aec08791683f82b8721d8"},
+        "name": "Wallbanger",
+        "author": "Alice Clayton",
+        "skus": [
+        {"sku": "WBH", "Price": 260, "quantity": 140, "feature": "hard cover"},
+        {"sku": "WBP", "Price": 85, "quantity": 230, "feature": "paperback"}
+        ]
+    },
+    {
+        "_id": {"$oid": "664aec08791683f82b8721d9"},
+        "name": "On Dublin Street",
+        "author": "Samantha Young",
+        "skus": [
+        {"sku": "ODSH", "Price": 270, "quantity": 150, "feature": "hard cover"},
+        {"sku": "ODSP", "Price": 90, "quantity": 250, "feature": "paperback"}
+        ]
+    },
+    {
+        "_id": {"$oid": "664aec08791683f82b8721da"},
+        "name": "Falling Into You",
+        "author": "Jasinda Wilder",
+        "skus": [
+        {"sku": "FIYH", "Price": 250, "quantity": 130, "feature": "hard cover"},
+        {"sku": "FIYP", "Price": 85, "quantity": 220, "feature": "paperback"}
+        ]
+    },
+    {
+        "_id": {"$oid": "664aec08791683f82b8721db"},
+        "name": "Rush",
+        "author": "Maya Banks",
+        "skus": [
+        {"sku": "RSH", "Price": 280, "quantity": 140, "feature": "hard cover"},
+        {"sku": "RSP", "Price": 90, "quantity": 240, "feature": "paperback"}
+        ]
+    },
+    {
+        "_id": {"$oid": "664aec08791683f82b8721dc"},
+        "name": "Beneath This Man",
+        "author": "Jodi Ellen Malpas",
+        "skus": [
+        {"sku": "BTHH", "Price": 290, "quantity": 150, "feature": "hard cover"},
+        {"sku": "BTHP", "Price": 95, "quantity": 250, "feature": "paperback"}
+        ]
+    },
+    {
+        "_id": {"$oid": "664aec08791683f82b8721dd"},
+        "name": "Seduced in the Dark",
+        "author": "C.J. Roberts",
+        "skus": [
+        {"sku": "SDH", "Price": 270, "quantity": 130, "feature": "hard cover"},
+        {"sku": "SDP", "Price": 85, "quantity": 220, "feature": "paperback"}
+        ]
+       
+    }
+  ]
+  

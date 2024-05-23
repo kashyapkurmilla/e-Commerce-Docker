@@ -4,18 +4,18 @@ services:
   python-server:
     build:
       context: .
-      dockerfile: Dockerfile.python
+      dockerfile: Dockerfiles/Dockerfile.python
     ports:
       - 8082:8082
     depends_on:
       - mongo
     environment:
-      - MONGO_URI=mongodb://mongo:27017/productdatabse
+      - MONGO_URI=mongodb://kashyap:password@mongo:27017/bookstore  # Updated URI
 
   mongo:
     build:
       context: .
-      dockerfile: Dockerfile.mongo
+      dockerfile: Dockerfiles/Dockerfile.mongo
     environment:
       - MONGO_INITDB_ROOT_USERNAME=kashyap
       - MONGO_INITDB_ROOT_PASSWORD=password
@@ -27,7 +27,7 @@ services:
   mongo-express:
     build:
       context: .
-      dockerfile: Dockerfile.mongoexpress
+      dockerfile: Dockerfiles/Dockerfile.mongoexpress
     environment:
       - ME_CONFIG_MONGODB_ADMINUSERNAME=kashyap
       - ME_CONFIG_MONGODB_ADMINPASSWORD=password

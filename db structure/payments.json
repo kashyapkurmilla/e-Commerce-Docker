@@ -1,0 +1,1 @@
+{"_id":{"$oid":"664a2cb9df83da3fa0805fd8"},"userId":"customer@gmail.com","type":"credit","status":"verified","card":{"type":"visa","lastFourNumbers":"2424","expiryMonth":12,"expiryYear":2040,"cvvVerified":true}}

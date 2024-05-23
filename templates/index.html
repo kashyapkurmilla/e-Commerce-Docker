@@ -1,61 +1,175 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product List</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <meta charset="UTF-8" />
+  <title>Online Bookstore</title>
+  <link rel="stylesheet" href="https://cdn.tailwindcss.com" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+  <style>
+    body {
+      font-family: 'Helvetica', 'Arial', sans-serif;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .nav {
+      display: flex;
+      gap: 2rem;
+    }
+
+    .nav-link {
+      text-decoration: none;
+      color: #000;
+      font-size: 1rem;
+    }
+
+    .nav-link:hover {
+      color: #333;
+    }
+
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #f9f9f9;
+      min-width: 160px;
+      box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+      z-index: 1;
+    }
+
+    .dropdown-content a {
+      color: black;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+    }
+
+    .dropdown-content a:hover {
+      background-color: #f1f1f1;
+    }
+
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+
+    .dropdown:hover .nav-link {
+      background-color: #3e8e41;
+    }
+
+    .main {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+    }
+
+    .book {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      padding: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .book-image {
+      width: 100%;
+      height: 200px;
+      object-fit: contain;
+    }
+
+    .book-title {
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+
+    .book-author {
+      font-size: 1rem;
+      color: #666;
+    }
+
+    .book-price {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 2rem;
+    }
+  </style>
 </head>
+
 <body>
-    <h1>Product List</h1>
-    <ul>
-        {% for product in products %}
-            <li>
-                <a href="#" class="product-link" data-id="{{ product.id }}">{{ product.name }}</a>
-            </li>
-        {% endfor %}
-    </ul>
-
-    <div id="addProductModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Add Product to MongoDB</h2>
-            <form id="productForm" method="POST" action="{{ url_for('add_to_db') }}">
-                <label for="productId">Product ID:</label>
-                <input type="text" id="productId" name="product_id" readonly>
-
-                <label for="productName">Product Name:</label>
-                <input type="text" id="productName" name="product_name" required>
-
-                <input type="submit" value="Add to MongoDB">
-            </form>
+  <div class="container">
+    <header class="header">
+      <div class="logo">Online Bookstore</div>
+      <nav class="nav">
+        <a href="#" class="nav-link">Home</a>
+        <div class="dropdown">
+          <a href="#" class="nav-link">Filter by Feature</a>
+          <div class="dropdown-content">
+            <a href="#" onclick="filterBooks('all')">View All</a>
+            <a href="#" onclick="filterBooks('paperback')">Paperback</a>
+            <a href="#" onclick="filterBooks('hard copy')">Hard Copy</a>
+          </div>
         </div>
-    </div>
+      </nav>
+    </header>
+    <main class="main">
+      {% for product in products %}
+      <div class="book">
+        <img src="static/images/book.png" alt="Book cover image" class="book-image" /> <!-- Replace open_book.png with the path to your image -->
+        <div class="book-info">
+          <h3 class="book-title">{{ product.name }}</h3>
+          <p class="book-author">{{ product.author }}</p>
+          <p class="book-price">Rs.{{ product.price }}</p> <!-- Display price -->
+          <p class="book-feature">{{ product.feature }}</p> <!-- Display feature -->
+          <button onclick="addToCart('{{ product._id }}')">Add to Cart</button>
+        </div>
+      </div>
+      {% endfor %}
+    </main>
+    
+    <footer class="footer">
+      <p>Copyright &copy; 2023 Online Bookstore</p>
+    </footer>
+  </div>
 
-    <script>
-        const productLinks = document.querySelectorAll('.product-link');
-        const modal = document.getElementById('addProductModal');
-        const closeModal = document.querySelector('.close');
-        const productIdInput = document.getElementById('productId');
-
-        productLinks.forEach(link => {
-            link.addEventListener('click', (event) => {
-                event.preventDefault();
-                const productId = event.target.getAttribute('data-id');
-                productIdInput.value = productId;
-                modal.style.display = 'block';
-            });
-        });
-
-        closeModal.addEventListener('click', () => {
-            modal.style.display = 'none';
-        });
-
-        window.addEventListener('click', (event) => {
-            if (event.target === modal) {
-                modal.style.display = 'none';
-            }
-        });
-    </script>
+  <script>
+    function filterBooks(feature) {
+      var books = document.querySelectorAll('.book');
+      books.forEach(function(book) {
+        var bookFeature = book.querySelector('.book-feature').textContent.toLowerCase();
+        if (feature === 'all' || bookFeature.includes(feature.toLowerCase())) {
+          book.style.display = 'flex';
+        } else {
+          book.style.display = 'none';
+        }
+      });
+    }
+  </script>
 </body>
+
 </html>
