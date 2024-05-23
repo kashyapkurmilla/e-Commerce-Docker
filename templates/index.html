@@ -25,8 +25,16 @@
     }
 
     .logo {
+      display: flex;
+      align-items: center;
       font-size: 1.5rem;
       font-weight: bold;
+    }
+
+    .logo img {
+      width: 50px;
+      height: 50px;
+      margin-right: 10px;
     }
 
     .nav {
@@ -124,7 +132,10 @@
 <body>
   <div class="container">
     <header class="header">
-      <div class="logo">Online Bookstore</div>
+      <div class="logo">
+        <img src="static/images/logo.png" alt="Logo" />
+        Online Bookstore
+      </div>
       <nav class="nav">
         <a href="#" class="nav-link">Home</a>
         <div class="dropdown">
@@ -135,6 +146,9 @@
             <a href="#" onclick="filterBooks('hard copy')">Hard Copy</a>
           </div>
         </div>
+        <a href="/view_cart" class="nav-link">
+          <i class="fas fa-shopping-cart"></i> View Cart
+        </a>
       </nav>
     </header>
     <main class="main">
@@ -146,7 +160,7 @@
           <p class="book-author">{{ product.author }}</p>
           <p class="book-price">Rs.{{ product.price }}</p> <!-- Display price -->
           <p class="book-feature">{{ product.feature }}</p> <!-- Display feature -->
-          <button onclick="addToCart('{{ product._id }}')">Add to Cart</button>
+          <button onclick="addToCart('{{ product.id }}')">Add to Cart</button>
         </div>
       </div>
       {% endfor %}
@@ -167,6 +181,28 @@
         } else {
           book.style.display = 'none';
         }
+      });
+    }
+
+    function addToCart(productId) {
+      fetch('/add_to_cart', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ product_id: productId })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 'success') {
+          alert('Product added to cart!');
+        } else {
+          alert('Failed to add product to cart.');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred. Please try again.');
       });
     }
   </script>
