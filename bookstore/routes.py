@@ -1,4 +1,4 @@
-from flask import render_template, request, jsonify
+from flask import render_template, request, jsonify, redirect, url_for
 import logging
 
 def init_routes(app, db):
@@ -20,8 +20,8 @@ def init_routes(app, db):
             product_list.append(product_info)
     logging.info(f"Fetched {len(product_list)} products from MongoDB")
 
-    @app.route('/')
-    def index():
+    @app.route('/home')
+    def home():
         try:
             return render_template('index.html', products=product_list)
         except Exception as e:
@@ -73,3 +73,40 @@ def init_routes(app, db):
         except Exception as e:
             logging.error(f"Error fetching cart items: {e}")
             return f"An error occurred: {e}", 500
+    @app.route('/login', methods=['GET', 'POST'])
+    def login():
+        if request.method == 'POST':
+            users = db.users
+            login_user = users.find_one({'email': request.form['email']})
+            if login_user and bcrypt.checkpw(request.form['password'].encode('utf-8'), login_user['hashedPassword']):
+                session['email'] = request.form['email']
+                return redirect(url_for('home'))
+            else:
+                flash('Invalid email/password combination')
+        return render_template('login.html')
+
+    @app.route('/register', methods=['GET', 'POST'])
+    def register():
+        if request.method == 'POST':
+            users = db.users
+            existing_user = users.find_one({'email': request.form['email']})
+            if existing_user is None:
+                hashpass = bcrypt.hashpw(request.form['password'].encode('utf-8'), bcrypt.gensalt())
+                users.insert_one({
+                    'email': request.form['email'],
+                    'firstName': request.form['firstName'],
+                    'lastName': request.form['lastName'],
+                    'hashedPassword': hashpass,
+                    'address': {
+                        'country': request.form['country'],
+                        'street1': request.form['street1'],
+                        'street2': request.form['street2'],
+                        'city': request.form['city'],
+                        'province': request.form['province'],
+                        'zip': request.form['zip']
+                    }
+                })
+                session['email'] = request.form['email']
+                return redirect(url_for('home'))
+            flash('That email already exists!')
+        return render_template('register.html')
