@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <title>Online Bookstore</title>
@@ -143,7 +142,7 @@
           <div class="dropdown-content">
             <a href="#" onclick="filterBooks('all')">View All</a>
             <a href="#" onclick="filterBooks('paperback')">Paperback</a>
-            <a href="#" onclick="filterBooks('hard copy')">Hard Copy</a>
+            <a href="#" onclick="filterBooks('hard cover')">Hard Copy</a>
           </div>
         </div>
         <a href="/view_cart" class="nav-link">
@@ -154,7 +153,7 @@
     <main class="main">
       {% for product in products %}
       <div class="book">
-        <img src="static/images/book.png" alt="Book cover image" class="book-image" /> <!-- Replace open_book.png with the path to your image -->
+        <img src="static/images/book.png" alt="Book cover image" class="book-image" /> 
         <div class="book-info">
           <h3 class="book-title">{{ product.name }}</h3>
           <p class="book-author">{{ product.author }}</p>
@@ -172,40 +171,18 @@
   </div>
 
   <script>
-    function filterBooks(feature) {
-      var books = document.querySelectorAll('.book');
-      books.forEach(function(book) {
-        var bookFeature = book.querySelector('.book-feature').textContent.toLowerCase();
-        if (feature === 'all' || bookFeature.includes(feature.toLowerCase())) {
-          book.style.display = 'flex';
-        } else {
-          book.style.display = 'none';
-        }
-      });
+function filterBooks(feature) {
+  var books = document.querySelectorAll('.book');
+  books.forEach(function(book) {
+    var bookFeature = book.querySelector('.book-feature').textContent.toLowerCase();
+    if (feature === 'all' || bookFeature.includes(feature.toLowerCase())) {
+      book.style.display = 'flex';
+    } else {
+      book.style.display = 'none';
     }
+  });
+}
 
-    function addToCart(productId) {
-      fetch('/add_to_cart', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ product_id: productId })
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.status === 'success') {
-          alert('Product added to cart!');
-        } else {
-          alert('Failed to add product to cart.');
-        }
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        alert('An error occurred. Please try again.');
-      });
-    }
   </script>
 </body>
-
 </html>
