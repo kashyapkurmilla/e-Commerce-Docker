@@ -148,6 +148,15 @@
         <a href="/view_cart" class="nav-link">
           <i class="fas fa-shopping-cart"></i> View Cart
         </a>
+        <div class="dropdown">
+          <a href="#" class="nav-link">My Account</a>
+          <div class="dropdown-content">
+            <a href="#" onclick="editAccount()">Edit Account</a>
+            <a href="#" onclick="viewAccount()">View Account</a>
+            <a href="#" onclick="viewOrders()">View Orders</a>
+            <a href="#" onclick="logout()">Logout</a>
+          </div>
+        </div>
       </nav>
     </header>
     <main class="main">
@@ -171,17 +180,32 @@
   </div>
 
   <script>
-function filterBooks(feature) {
-  var books = document.querySelectorAll('.book');
-  books.forEach(function(book) {
-    var bookFeature = book.querySelector('.book-feature').textContent.toLowerCase();
-    if (feature === 'all' || bookFeature.includes(feature.toLowerCase())) {
-      book.style.display = 'flex';
-    } else {
-      book.style.display = 'none';
-    }
-  });
+    function filterBooks(feature) {
+      var books = document.querySelectorAll('.book');
+      books.forEach(function(book) {
+        var bookFeature = book.querySelector('.book-feature').textContent.toLowerCase();
+        if (feature === 'all' || bookFeature.includes(feature.toLowerCase())) {
+          book.style.display = 'flex';
+        } else {
+          book.style.display = 'none';
+        }
+      });
 }
+    function editAccount() {
+      // Logic for editing account details
+    }
+
+    function viewAccount() {
+      // Logic for viewing account details
+    }
+
+    function viewOrders() {
+      // Logic for viewing orders
+    }
+
+    function logout() {
+      // Logic for logging out
+    }
 
   </script>
 </body>

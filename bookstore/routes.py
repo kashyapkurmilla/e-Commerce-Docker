@@ -1,7 +1,65 @@
-from flask import render_template, request, jsonify, redirect, url_for
+from flask import render_template, request, redirect, url_for, session, flash
+import bcrypt
 import logging
+from .database import init_db, get_db, close_db
 
 def init_routes(app, db):
+    @app.route('/')
+    def root():
+        return redirect(url_for('login'))
+
+    @app.route('/login', methods=['GET', 'POST'], endpoint='login')
+    def login():
+        if request.method == 'POST':
+            users = db.users
+            login_user = users.find_one({'_id': request.form['email']})
+            if login_user and bcrypt.checkpw(request.form['password'].encode('utf-8'), login_user['hashedPassword'].encode('utf-8')):
+                session['email'] = request.form['email']
+                return redirect(url_for('home'))  # Redirect to home page after successful login
+            else:
+                flash('Invalid email/password combination')
+                return render_template('login.html')  # Render login template with error message if credentials are incorrect
+        return render_template('login.html')
+
+
+
+
+    @app.route('/register', methods=['GET', 'POST'], endpoint='register')
+    def register():
+        if request.method == 'POST':
+            users = db.users
+            existing_user = users.find_one({'_id': request.form['email']})
+            if existing_user:
+                flash('That email already exists!')
+            else:
+                hashpass = bcrypt.hashpw(request.form['password'].encode('utf-8'), bcrypt.gensalt())
+                user_data = {
+                    '_id': request.form['email'],
+                    'firstName': request.form['firstName'],
+                    'lastName': request.form['lastName'],
+                    'hashedPassword': hashpass.decode('utf-8'),
+                    'address': {
+                        'country': request.form['country'],
+                        'street1': request.form['street1'],
+                        'street2': request.form['street2'],
+                        'city': request.form['city'],
+                        'province': request.form['province'],
+                        'zip': request.form['zip']
+                    },
+                    'shippingaddress': {
+                        'country': request.form['country'],
+                        'street1': request.form['street1'],
+                        'street2': request.form['street2'],
+                        'city': request.form['city'],
+                        'province': request.form['province'],
+                        'zip': request.form['zip']
+                    }
+                }
+                users.insert_one(user_data)
+                session['email'] = request.form['email']
+                return redirect(url_for('login'))  # Redirect to login page after successful registration
+        return render_template('register.html')
+    
     # Fetch product data from MongoDB
     products = db.products.find()
 
@@ -19,8 +77,8 @@ def init_routes(app, db):
             }
             product_list.append(product_info)
     logging.info(f"Fetched {len(product_list)} products from MongoDB")
-
-    @app.route('/home')
+    
+    @app.route('/home', endpoint='home')
     def home():
         try:
             return render_template('index.html', products=product_list)
@@ -28,85 +86,12 @@ def init_routes(app, db):
             logging.error(f"Error fetching products: {e}")
             return f"An error occurred: {e}", 500
 
-    @app.route('/add_to_cart', methods=['POST'])
-    def add_to_cart():
-        try:
-            product_id = request.json.get('product_id')
-            user_id = "user123"  # Static user ID for this example, replace with real user authentication
+    @app.route('/logout', endpoint='logout')
+    def logout():
+        session.pop('email', None)
+        return redirect(url_for('login'))
 
-            cart_item = {
-                'user_id': user_id,
-                'product_id': product_id
-            }
-
-            db.cart.insert_one(cart_item)
-            logging.info(f"Product {product_id} added to cart for user {user_id}")
-
-            return jsonify({'status': 'success'}), 200
-        except Exception as e:
-            logging.error(f"Error adding to cart: {e}")
-            return jsonify({'status': 'error', 'message': str(e)}), 500
-
-    @app.route('/view_cart')
-    def view_cart():
-        try:
-            user_id = "user123"  # Static user ID for this example, replace with real user authentication
-            cart_items = db.cart.find({'user_id': user_id})
-            
-            cart_product_ids = [item['product_id'] for item in cart_items]
-            cart_products = db.products.find({'_id': {'$in': cart_product_ids}})
-            
-            cart_list = []
-            for product in cart_products:
-                for sku in product.get('skus', []):
-                    cart_item_info = {
-                        'name': product['name'],
-                        'author': product['author'],
-                        'price': sku['Price'],
-                        'feature': sku['feature']
-                    }
-                    cart_list.append(cart_item_info)
-            
-            logging.info(f"Fetched {len(cart_list)} items for user {user_id}")
-            
-            return render_template('view_cart.html', cart_items=cart_list)
-        except Exception as e:
-            logging.error(f"Error fetching cart items: {e}")
-            return f"An error occurred: {e}", 500
-    @app.route('/login', methods=['GET', 'POST'])
-    def login():
-        if request.method == 'POST':
-            users = db.users
-            login_user = users.find_one({'email': request.form['email']})
-            if login_user and bcrypt.checkpw(request.form['password'].encode('utf-8'), login_user['hashedPassword']):
-                session['email'] = request.form['email']
-                return redirect(url_for('home'))
-            else:
-                flash('Invalid email/password combination')
-        return render_template('login.html')
-
-    @app.route('/register', methods=['GET', 'POST'])
-    def register():
-        if request.method == 'POST':
-            users = db.users
-            existing_user = users.find_one({'email': request.form['email']})
-            if existing_user is None:
-                hashpass = bcrypt.hashpw(request.form['password'].encode('utf-8'), bcrypt.gensalt())
-                users.insert_one({
-                    'email': request.form['email'],
-                    'firstName': request.form['firstName'],
-                    'lastName': request.form['lastName'],
-                    'hashedPassword': hashpass,
-                    'address': {
-                        'country': request.form['country'],
-                        'street1': request.form['street1'],
-                        'street2': request.form['street2'],
-                        'city': request.form['city'],
-                        'province': request.form['province'],
-                        'zip': request.form['zip']
-                    }
-                })
-                session['email'] = request.form['email']
-                return redirect(url_for('home'))
-            flash('That email already exists!')
-        return render_template('register.html')
+    @app.errorhandler(401)
+    def unauthorized_error(error):
+        flash('Invalid email/password combination')
+        return redirect(url_for('login'))
