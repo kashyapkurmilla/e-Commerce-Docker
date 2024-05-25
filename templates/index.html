@@ -45,10 +45,29 @@
       text-decoration: none;
       color: #000;
       font-size: 1rem;
+      display: flex;
+      align-items: center;
+      position: relative;
     }
 
-    .nav-link:hover {
-      color: #333;
+    .nav-link i {
+      margin-right: 8px;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -3px;
+      left: 50%;
+      background-color: black;
+      transition: width 0.3s, left 0.3s;
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+      left: 0;
     }
 
     .dropdown {
@@ -63,13 +82,35 @@
       min-width: 160px;
       box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
       z-index: 1;
+      margin-top: 3px; /* Added margin to move the dropdown down */
     }
 
     .dropdown-content a {
       color: black;
       padding: 12px 16px;
       text-decoration: none;
-      display: block;
+      display: flex;
+      align-items: center;
+      position: relative;
+    }
+    .dropdown-content a i {
+      margin-right: 8px;
+    }
+
+    .dropdown-content a::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -3px;
+      left: 50%;
+      background-color: black;
+      transition: width 0.3s, left 0.3s;
+    }
+
+    .dropdown-content a:hover::after {
+      width: 100%;
+      left: 0;
     }
 
     .dropdown-content a:hover {
@@ -78,10 +119,6 @@
 
     .dropdown:hover .dropdown-content {
       display: block;
-    }
-
-    .dropdown:hover .nav-link {
-      background-color: #3e8e41;
     }
 
     .main {
@@ -136,25 +173,23 @@
         Online Bookstore
       </div>
       <nav class="nav">
-        <a href="#" class="nav-link">Home</a>
+        <a href="#" class="nav-link"><i class="fas fa-home"></i> Home</a>
         <div class="dropdown">
-          <a href="#" class="nav-link">Filter by Feature</a>
+          <a href="#" class="nav-link"><i class="fas fa-filter"></i> Filter by Feature</a>
           <div class="dropdown-content">
-            <a href="#" onclick="filterBooks('all')">View All</a>
-            <a href="#" onclick="filterBooks('paperback')">Paperback</a>
-            <a href="#" onclick="filterBooks('hard cover')">Hard Copy</a>
+            <a href="#" onclick="filterBooks('all')"><i class="fas fa-book"></i> View All</a>
+            <a href="#" onclick="filterBooks('paperback')"><i class="fas fa-book-open"></i> Paperback</a>
+            <a href="#" onclick="filterBooks('hard cover')"><i class="fas fa-book"></i> Hard Copy</a>
           </div>
         </div>
-        <a href="/view_cart" class="nav-link">
-          <i class="fas fa-shopping-cart"></i> View Cart
-        </a>
+        <a href="/view_cart" class="nav-link"><i class="fas fa-shopping-cart"></i> View Cart</a>
         <div class="dropdown">
-          <a href="#" class="nav-link">My Account</a>
+          <a href="#" class="nav-link"><i class="fas fa-user"></i> My Account</a>
           <div class="dropdown-content">
-            <a href="#" onclick="editAccount()">Edit Account</a>
-            <a href="#" onclick="viewAccount()">View Account</a>
-            <a href="#" onclick="viewOrders()">View Orders</a>
-            <a href="#" onclick="logout()">Logout</a>
+            <a href="#" onclick="editAccount()"><i class="fas fa-edit"></i> Edit Account</a>
+            <a href="#" onclick="viewAccount()"><i class="fas fa-user-circle"></i> View Account</a>
+            <a href="#" onclick="viewOrders()"><i class="fas fa-box"></i> View Orders</a>
+            <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
           </div>
         </div>
       </nav>
@@ -190,7 +225,8 @@
           book.style.display = 'none';
         }
       });
-}
+    }
+
     function editAccount() {
       // Logic for editing account details
     }
@@ -206,7 +242,6 @@
     function logout() {
       // Logic for logging out
     }
-
   </script>
 </body>
 </html>
