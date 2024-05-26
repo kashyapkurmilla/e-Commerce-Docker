@@ -21,9 +21,6 @@ def init_routes(app, db):
                 return render_template('login.html')  # Render login template with error message if credentials are incorrect
         return render_template('login.html')
 
-
-
-
     @app.route('/register', methods=['GET', 'POST'], endpoint='register')
     def register():
         if request.method == 'POST':
@@ -59,28 +56,28 @@ def init_routes(app, db):
                 session['email'] = request.form['email']
                 return redirect(url_for('login'))  # Redirect to login page after successful registration
         return render_template('register.html')
-    
-    # Fetch product data from MongoDB
-    products = db.products.find()
 
-    # Iterate over products and extract relevant information
-    product_list = []
-    for product in products:
-        # Iterate over SKUs
-        for sku in product.get('skus', []):
-            product_info = {
-                'id': str(product['_id']),
-                'name': product['name'],
-                'author': product['author'],
-                'price': sku['Price'],  # Get price from SKU
-                'feature': sku['feature']
-            }
-            product_list.append(product_info)
-    logging.info(f"Fetched {len(product_list)} products from MongoDB")
-    
     @app.route('/home', endpoint='home')
     def home():
         try:
+            # Fetch product data from MongoDB
+            products = db.products.find()
+
+            # Iterate over products and extract relevant information
+            product_list = []
+            for product in products:
+                # Iterate over SKUs
+                for sku in product.get('skus', []):
+                    product_info = {
+                        'id': str(product['_id']),
+                        'name': product['name'],
+                        'author': product['author'],
+                        'price': sku['Price'],  # Get price from SKU
+                        'feature': sku['feature'],
+                        'image_url': product.get('image_url')  # Get image URL from product
+                    }
+                    product_list.append(product_info)
+            logging.info(f"Fetched {len(product_list)} products from MongoDB")
             return render_template('index.html', products=product_list)
         except Exception as e:
             logging.error(f"Error fetching products: {e}")

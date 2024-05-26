@@ -1,17 +1,12 @@
 # Use the official MinIO image as the base image
 FROM minio/minio:latest
 
-# Set environment variables for MinIO (optional, you can also set these in docker-compose.yml)
 ENV MINIO_ROOT_USER=kashyap
 ENV MINIO_ROOT_PASSWORD=password
 
-# Expose ports (9000 for the API, 9001 for the console)
+# 9000 for the API, 9001 for the console
 EXPOSE 9000
 EXPOSE 9001
 
-# Add any custom configuration files if needed (this is optional)
-# COPY custom-config.json /root/.minio/config.json
-
-# Set the entrypoint to run MinIO server with specified data directory and console address
 ENTRYPOINT ["minio"]
 CMD ["server", "/data", "--console-address", ":9001"]
