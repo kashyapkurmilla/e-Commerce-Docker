@@ -1,6 +1,19 @@
 version: '3.8'
 
 services:
+  minio:
+    build:
+      context: .
+      dockerfile: Dockerfiles/Dockerfile.minio
+    ports:
+      - 9000:9000
+      - 9001:9001
+    environment:
+      - MINIO_ROOT_USER=kashyap
+      - MINIO_ROOT_PASSWORD=password
+    volumes:
+      - minio-data:/data
+      
   python-server:
     build:
       context: .
@@ -39,18 +52,7 @@ services:
     ports:
       - 8081:8081
 
-  minio:
-    build:
-      context: .
-      dockerfile: Dockerfiles/Dockerfile.minio
-    ports:
-      - 9000:9000
-      - 9001:9001
-    environment:
-      - MINIO_ROOT_USER=kashyap
-      - MINIO_ROOT_PASSWORD=password
-    volumes:
-      - minio-data:/data
+  
 
 volumes:
   product-data:

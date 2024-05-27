@@ -92,3 +92,15 @@ def init_routes(app, db):
     def unauthorized_error(error):
         flash('Invalid email/password combination')
         return redirect(url_for('login'))
+    
+    @app.route('/book/<int:product_id>')
+    def book_details(product_id):
+        try:
+            book = db.products.find_one({'_id': product_id})
+            return render_template('productinfo.html', book=book)
+        except Exception as e:
+            logging.error(f"Error fetching book details: {e}")
+            # Handle error appropriately, for example, redirect to home page with a flash message
+            flash('Error fetching book details')
+            return redirect(url_for('home'))
+
