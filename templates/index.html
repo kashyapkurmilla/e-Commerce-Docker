@@ -48,16 +48,19 @@
 
     .nav {
       display: flex;
-      gap: 2rem;
+      align-items: center;
+      margin-left: 1000px;
+      gap: 2rem; /* Adjusted gap */
+      flex-grow: 1;
     }
 
     .nav-link {
-      text-decoration:none ;
-      color: #000;
+      text-decoration: none;
+      color: #333;
       font-size: 1rem;
+      position: relative;
       display: flex;
       align-items: center;
-      position: relative;
     }
 
     .nav-link i {
@@ -120,13 +123,13 @@
       transition: width 0.3s, left 0.3s;
     }
 
-    .dropdown-content a:hover::after {
+    /* .dropdown-content a:hover::after {
       width: 100%;
       left: 0;
-    }
+    } */
 
     .dropdown-content a:hover {
-      background-color: #f1f1f1;
+      background-color: #d4cbcb;
     }
 
     .dropdown:hover .dropdown-content {
@@ -237,8 +240,8 @@
         <div class="dropdown">
           <a href="#" class="nav-link"><i class="fas fa-user"></i> My Account</a>
           <div class="dropdown-content">
-            <a href="#" onclick="editAccount()"><i class="fas fa-edit"></i> Edit Account</a>
-            <a href="#" onclick="viewAccount()"><i class="fas fa-user-circle"></i> View Account</a>
+            <a href="/home/my_account"><i class="fas fa-user-circle"></i> View Account</a>
+            <a href="/home/edit_account"><i class="fas fa-edit"></i> Edit Details</a>
             <a href="#" onclick="viewOrders()"><i class="fas fa-box"></i> View Orders</a>
             <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
           </div>
@@ -287,17 +290,14 @@
     function editAccount() {
       // Logic for editing account details
     }
-
-    function viewAccount() {
-      // Logic for viewing account details
-    }
-
     function viewOrders() {
       // Logic for viewing orders
     }
 
     function logout() {
-      // Logic for logging out
+      if (confirm('Are you sure you want to logout?')) {
+        window.location.href = "/logout"; // Update this URL to your logout endpoint
+      }
     }
     function redirectToBookPage(productId) {
       window.location.href = "/book/" + productId;

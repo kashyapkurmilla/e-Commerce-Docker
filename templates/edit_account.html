@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <title>Edit Account - Online Bookstore</title>
@@ -8,6 +9,8 @@
   <style>
     body {
       font-family: 'Helvetica', 'Arial', sans-serif;
+      margin: 0;
+      padding-top: 80px;
     }
 
     .container {
@@ -17,10 +20,17 @@
     }
 
     .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: white;
+      z-index: 1000;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 2rem;
+      padding: 1rem 2rem;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     }
 
     .logo {
@@ -38,108 +48,295 @@
 
     .nav {
       display: flex;
+      align-items: center;
+      margin-left: 1000px;
       gap: 2rem;
+      /* Adjusted gap */
+      flex-grow: 1;
     }
 
     .nav-link {
       text-decoration: none;
-      color: #000;
+      color: #333;
       font-size: 1rem;
+      position: relative;
+      display: flex;
+      align-items: center;
     }
 
-    .nav-link:hover {
-      color: #333;
+    .nav-link i {
+      margin-right: 8px;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -3px;
+      left: 50%;
+      background-color: black;
+      transition: width 0.3s, left 0.3s;
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+      left: 0;
     }
 
     .main {
       display: flex;
       justify-content: center;
-      align-items: center;
-      height: calc(100vh - 100px);
     }
 
     .form-container {
-      border: 1px solid #ccc;
-      padding: 2rem;
-      border-radius: 5px;
-      max-width: 400px;
       width: 100%;
+      max-width: 600px;
+      padding: 2rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     }
 
     .form-container h2 {
-      margin-bottom: 1rem;
-      font-size: 1.5rem;
       text-align: center;
+      margin-bottom: 1.5rem;
     }
 
-    .form-container input {
-      width: 100%;
+    .form-container label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+    }
+
+    .form-container input[type="text"],
+    .form-container input[type="password"] {
+      width: calc(100% - 32px);
       padding: 0.5rem;
       margin-bottom: 1rem;
       border: 1px solid #ccc;
       border-radius: 5px;
+      display: inline-block;
     }
 
-    .form-container button {
-      width: 100%;
-      padding: 0.5rem;
-      background-color: #007bff;
+    .edit-container {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
+    .edit-icon {
+      cursor: pointer;
+      color: #666;
+      margin-left: 8px;
+    }
+
+    .edit-icon:hover {
+      color: #333;
+    }
+
+    .edit-icon {
+      position: relative;
+      /* Ensures proper positioning */
+    }
+
+    .edit-icon:hover::after {
+      content: "Edit";
+      /* Text to be displayed */
+      position: absolute;
+      /* Positioning relative to the parent */
+      top: -20px;
+      /* Adjust as needed */
+      left: 0;
+      /* Adjust as needed */
+      background-color: #333;
+      /* Background color */
       color: #fff;
+      /* Text color */
+      padding: 5px;
+      /* Padding around the text */
+      border-radius: 5px;
+      /* Rounded corners */
+      display: block;
+      /* Display as a block element */
+    }
+
+    .save-button {
+      padding: 10px 20px;
+      /* Add padding for better spacing */
+      font-size: 16px;
+      /* Adjust font size */
+      font-weight: bold;
+      /* Make the text bold */
+      color: #fff;
+      /* Text color */
+      background-color: #4CAF50;
+      /* Green background color */
+      border: none;
+      /* Remove default button border */
+      border-radius: 5px;
+      /* Add rounded corners */
+      cursor: pointer;
+      /* Show pointer cursor on hover */
+      transition: background-color 0.3s ease;
+      /* Smooth transition for background color */
+      display: block;
+      /* Make it block element */
+      margin: 0 auto;
+      /* Align center using margin auto */
+    }
+
+    .save-button:hover {
+      background-color: #45a049;
+      /* Darker green on hover */
+    }
+
+    .account-details button {
+      background-color: #659D78;
+      color: white;
+      padding: 10px;
+      font-size: 1rem;
       border: none;
       border-radius: 5px;
-      font-size: 1rem;
       cursor: pointer;
+      transition: background-color 0.3s;
     }
 
-    .form-container button:hover {
-      background-color: #0056b3;
-    }
-
-    .form-container .error {
-      color: red;
-      margin-bottom: 1rem;
-      text-align: center;
+    .account-details button:hover {
+      background-color: #45a049;
     }
   </style>
 </head>
+
 <body>
   <div class="container">
     <header class="header">
       <div class="logo">
-        <img src="static/images/logo.png" alt="Logo" />
+        <img src="http://localhost:9000/products/products/logo.png" alt="Logo" />
         Online Bookstore
       </div>
       <nav class="nav">
-        <a href="/" class="nav-link">Home</a>
-        <a href="/filter" class="nav-link">Filter by Feature</a>
-        <a href="/view_cart" class="nav-link"><i class="fas fa-shopping-cart"></i> View Cart</a>
-        <a href="/my_account" class="nav-link">My Account</a>
+        <a href="/home" class="nav-link"><i class="fas fa-home"></i> Home</a>
+        <a href="/home/my_account" class="nav-link"><i class="fas fa-user-circle"></i> View Account</a>
+        <a href="/view_orders" class="nav-link"><i class="fas fa-box"></i> View Orders</a>
+        <a href="#" class="nav-link" onclick="confirmLogout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
       </nav>
     </header>
     <main class="main">
       <div class="form-container">
         <h2>Edit Account</h2>
-        {% if error %}
-          <p class="error">{{ error }}</p>
-        {% endif %}
-        <form method="POST" action="/edit_account">
-          <input type="text" name="firstName" placeholder="First Name" value="{{ user.firstName }}" required />
-          <input type="text" name="lastName" placeholder="Last Name" value="{{ user.lastName }}" required />
-          <input type="email" name="email" placeholder="Email" value="{{ user.email }}" required />
-          <input type="password" name="password" placeholder="New Password" />
-          <input type="text" name="country" placeholder="Country" value="{{ user.address.country }}" required />
-          <input type="text" name="street1" placeholder="Street Address 1" value="{{ user.address.street1 }}" required />
-          <input type="text" name="street2" placeholder="Street Address 2" value="{{ user.address.street2 }}" />
-          <input type="text" name="city" placeholder="City" value="{{ user.address.city }}" required />
-          <input type="text" name="province" placeholder="Province" value="{{ user.address.province }}" required />
-          <input type="text" name="zip" placeholder="Zip Code" value="{{ user.address.zip }}" required />
-          <button type="submit">Save Changes</button>
+        <form action="/home/edit_account" method="POST" onsubmit="return validateForm()">
+          <div class="editable">
+            <label for="firstName">First Name</label>
+            <div class="edit-container">
+              <input type="text" id="firstName" name="firstName" value="{{ user.firstName }}" required readonly>
+              <i class="fas fa-pen edit-icon" onclick="enableEdit(this)"></i>
+            </div>
+          </div>
+          <div class="editable">
+            <label for="lastName">Last Name</label>
+            <div class="edit-container">
+              <input type="text" id="lastName" name="lastName" value="{{ user.lastName }}" required readonly>
+              <i class="fas fa-pen edit-icon" onclick="enableEdit(this)"></i>
+            </div>
+          </div>
+          <div class="editable">
+            <label for="password">Password</label>
+            <div class="edit-container">
+              <input type="password" id="password" name="password">
+              <i class="fas fa-pen edit-icon" onclick="enableEdit(this)"></i>
+            </div>
+          </div>
+          <div class="editable">
+            <label for="confirmPassword">Confirm Password</label>
+            <div class="edit-container">
+              <input type="password" id="confirmPassword" name="confirmPassword">
+              <i class="fas fa-pen edit-icon" onclick="enableEdit(this)"></i>
+            </div>
+          </div>
+          <h3>Address</h3>
+          <div class="editable">
+            <label for="country">Country</label>
+            <div class="edit-container">
+              <input type="text" id="country" name="country" value="{{ user.address.country }}" required readonly>
+              <i class="fas fa-pen edit-icon" onclick="enableEdit(this)"></i>
+            </div>
+          </div>
+          <div class="editable">
+            <label for="street1">Street 1</label>
+            <div class="edit-container">
+              <input type="text" id="street1" name="street1" value="{{ user.address.street1 }}" required readonly>
+              <i class="fas fa-pen edit-icon" onclick="enableEdit(this)"></i>
+            </div>
+          </div>
+          <div class="editable">
+            <label for="street2">Street 2</label>
+            <div class="edit-container">
+              <input type="text" id="street2" name="street2" value="{{ user.address.street2 }}">
+              <i class="fas fa-pen edit-icon" onclick="enableEdit(this)"></i>
+            </div>
+          </div>
+          <div class="editable">
+            <label for="city">City</label>
+            <div class="edit-container">
+              <input type="text" id="city" name="city" value="{{ user.address.city }}" required readonly>
+              <i class="fas fa-pen edit-icon" onclick="enableEdit(this)"></i>
+            </div>
+          </div>
+          <div class="editable">
+            <label for="province">Province</label>
+            <div class="edit-container">
+              <input type="text" id="province" name="province" value="{{ user.address.province }}" required readonly>
+              <i class="fas fa-pen edit-icon" onclick="enableEdit(this)"></i>
+            </div>
+          </div>
+          <div class="editable">
+            <label for="zip">Postal Code</label>
+            <div class="edit-container">
+              <input type="text" id="zip" name="zip" value="{{ user.address.zip }}" required readonly>
+              <i class="fas fa-pen edit-icon" onclick="enableEdit(this)"></i>
+            </div>
+          </div>
+          <button type="submit" class="save-button">Save Changes</button>
         </form>
       </div>
     </main>
     <footer class="footer">
-      <p>Copyright &copy; 2023 Online Bookstore</p>
+      <p>&copy; 2023 Online Bookstore</p>
     </footer>
   </div>
+
+  <script>
+function enableEdit(icon) {
+  var input = icon.parentElement.querySelector('input[type="text"]');
+  input.readOnly = !input.readOnly; // Toggle readOnly property
+  input.focus(); // Focus the input field
+}
+
+function validateForm() {
+  var password = document.getElementById("password").value;
+  var confirmPassword = document.getElementById("confirmPassword").value;
+
+  if (password !== confirmPassword) {
+    alert("Password and Confirm Password do not match");
+    return false; // Prevent form submission
+  }
+  if (confirm('Are you sure of the changes')) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function confirmLogout() {
+  if (confirm('Are you sure you want to logout?')) {
+    window.location.href = "/";
+  }
+}
+
+  </script>
+
+
 </body>
+
 </html>
