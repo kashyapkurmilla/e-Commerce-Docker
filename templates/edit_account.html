@@ -49,7 +49,7 @@
     .nav {
       display: flex;
       align-items: center;
-      margin-left: 1000px;
+      margin-left: 880px;
       gap: 2rem;
       /* Adjusted gap */
       flex-grow: 1;
@@ -109,8 +109,7 @@
       font-weight: bold;
     }
 
-    .form-container input[type="text"],
-    .form-container input[type="password"] {
+    .form-container input[type="text"] {
       width: calc(100% - 32px);
       padding: 0.5rem;
       margin-bottom: 1rem;
@@ -218,6 +217,7 @@
       <nav class="nav">
         <a href="/home" class="nav-link"><i class="fas fa-home"></i> Home</a>
         <a href="/home/my_account" class="nav-link"><i class="fas fa-user-circle"></i> View Account</a>
+        <a href="/home/change_password" class="nav-link"><i class="fas fa-key"></i> Change Password</a>
         <a href="/view_orders" class="nav-link"><i class="fas fa-box"></i> View Orders</a>
         <a href="#" class="nav-link" onclick="confirmLogout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
       </nav>
@@ -237,20 +237,6 @@
             <label for="lastName">Last Name</label>
             <div class="edit-container">
               <input type="text" id="lastName" name="lastName" value="{{ user.lastName }}" required readonly>
-              <i class="fas fa-pen edit-icon" onclick="enableEdit(this)"></i>
-            </div>
-          </div>
-          <div class="editable">
-            <label for="password">Password</label>
-            <div class="edit-container">
-              <input type="password" id="password" name="password">
-              <i class="fas fa-pen edit-icon" onclick="enableEdit(this)"></i>
-            </div>
-          </div>
-          <div class="editable">
-            <label for="confirmPassword">Confirm Password</label>
-            <div class="edit-container">
-              <input type="password" id="confirmPassword" name="confirmPassword">
               <i class="fas fa-pen edit-icon" onclick="enableEdit(this)"></i>
             </div>
           </div>
@@ -301,42 +287,32 @@
         </form>
       </div>
     </main>
-    <footer class="footer">
-      <p>&copy; 2023 Online Bookstore</p>
+    <footer class="footer" style="text-align: center;">
+      <p>Copyright &copy; 2024 Online Bookstore</p>
     </footer>
   </div>
 
   <script>
-function enableEdit(icon) {
-  var input = icon.parentElement.querySelector('input[type="text"]');
-  input.readOnly = !input.readOnly; // Toggle readOnly property
-  input.focus(); // Focus the input field
-}
+    function enableEdit(icon) {
+      var input = icon.parentElement.querySelector('input[type="text"]');
+      input.readOnly = !input.readOnly; // Toggle readOnly property
+      input.focus(); // Focus the input field
+    }
 
-function validateForm() {
-  var password = document.getElementById("password").value;
-  var confirmPassword = document.getElementById("confirmPassword").value;
+    function validateForm() {
+      if (confirm('Are you sure of the changes')) {
+        return true;
+      } else {
+        return false;
+      }
+    }
 
-  if (password !== confirmPassword) {
-    alert("Password and Confirm Password do not match");
-    return false; // Prevent form submission
-  }
-  if (confirm('Are you sure of the changes')) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-function confirmLogout() {
-  if (confirm('Are you sure you want to logout?')) {
-    window.location.href = "/";
-  }
-}
-
+    function confirmLogout() {
+      if (confirm('Are you sure you want to logout?')) {
+        window.location.href = "/";
+      }
+    }
   </script>
-
-
 </body>
 
 </html>

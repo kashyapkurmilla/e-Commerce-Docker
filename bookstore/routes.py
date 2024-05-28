@@ -1,4 +1,5 @@
 from flask import render_template, request, redirect, url_for, session, flash
+from werkzeug.security import check_password_hash, generate_password_hash
 import bcrypt
 import logging
 from .database import init_db, get_db, close_db
@@ -149,15 +150,49 @@ def init_routes(app, db):
                     'zip': request.form['zip']
                 }
             }
-            
-            password = request.form.get('password')
-            confirmPassword = request.form.get('confirmPassword')
-            if password and password == confirmPassword:
-                new_data['hashedPassword'] = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-            
+
             db.users.update_one({'_id': session['email']}, {'$set': new_data})
             flash('Account details updated successfully')
             return redirect(url_for('my_account'))
 
         return render_template('edit_account.html', user=user)
+
+
+
+    @app.route('/home/change_password', methods=['GET', 'POST'])
+    def change_password():
+        if 'email' not in session:
+            flash('Please log in to change your password')
+            return redirect(url_for('login'))
+
+        user = db.users.find_one({'_id': session['email']})
+        if not user:
+            flash('User not found')
+            return redirect(url_for('home'))
+
+        if request.method == 'POST':
+            current_password = request.form['currentPassword']
+            new_password = request.form['newPassword']
+            confirm_password = request.form['confirmPassword']
+
+            # Check if the current password is correct
+            if not bcrypt.checkpw(current_password.encode('utf-8'), user['hashedPassword'].encode('utf-8')):
+                flash('Current password is incorrect')
+                return render_template('change_password.html', user=user)
+
+            # Check if the new password and confirm password match
+            if new_password != confirm_password:
+                flash('New password and confirm password do not match')
+                return render_template('change_password.html', user=user)
+
+            # Update the user's password
+            new_hashed_password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
+            db.users.update_one({'_id': session['email']}, {'$set': {'hashedPassword': new_hashed_password.decode('utf-8')}})
+            flash('Password changed successfully')
+            return redirect(url_for('my_account'))
+
+        return render_template('change_password.html', user=user)
+
+
+
 
