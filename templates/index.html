@@ -10,7 +10,8 @@
     body {
       font-family: 'Helvetica', 'Arial', sans-serif;
       margin: 0;
-      padding-top: 80px; /* Add padding to prevent content from hiding under the fixed header */
+      padding-top: 80px;
+      /* Add padding to prevent content from hiding under the fixed header */
     }
 
     .container {
@@ -20,7 +21,8 @@
     }
 
     .header {
-      position: fixed; /* Make the header fixed */
+      position: fixed;
+      /* Make the header fixed */
       top: 0;
       left: 0;
       width: 100%;
@@ -50,7 +52,8 @@
       display: flex;
       align-items: center;
       margin-left: 1000px;
-      gap: 2rem; /* Adjusted gap */
+      gap: 2rem;
+      /* Adjusted gap */
       flex-grow: 1;
     }
 
@@ -182,17 +185,23 @@
 
     .view-details-btn {
       border: none;
-      background-color: #659D78; /* Green background color */
+      background-color: #659D78;
+      /* Green background color */
       color: white;
-      padding: 10px; /* Add padding to increase the clickable area */
-      font-size: 0.999rem; /* Increase font size for better visibility */
-      border-radius: 5px; /* Add rounded corners for a modern look */
+      padding: 10px;
+      /* Add padding to increase the clickable area */
+      font-size: 0.999rem;
+      /* Increase font size for better visibility */
+      border-radius: 5px;
+      /* Add rounded corners for a modern look */
       cursor: pointer;
-      transition: background-color 0.3s; /* Smooth transition on hover */
+      transition: background-color 0.3s;
+      /* Smooth transition on hover */
     }
 
     .view-details-btn:hover {
-      background-color: #45a049; /* Darker green on hover */
+      background-color: #45a049;
+      /* Darker green on hover */
     }
 
     /* Added styles for the circular button */
@@ -243,7 +252,7 @@
             <a href="/home/my_account"><i class="fas fa-user-circle"></i> View Account</a>
             <a href="/home/edit_account"><i class="fas fa-edit"></i> Edit Details</a>
             <a href="/home/change_password"><i class="fas fa-key"></i> Change Password</a>
-            <a href="#" onclick="viewOrders()"><i class="fas fa-box"></i> View Orders</a>
+            <a href="/home/view_orders"><i class="fas fa-box"></i> View Orders</a>
             <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
           </div>
         </div>
@@ -253,17 +262,17 @@
       {% for product in products %}
       <div class="book">
         {% if product.image_url %}
-          <img src="{{ product.image_url }}" alt="Book cover image" class="book-image" /> 
+        <img src="{{ product.image_url }}" alt="Book cover image" class="book-image" />
         {% else %}
-          <img src="static/images/book.png" alt="Book cover image" class="book-image" /> 
-        {% endif %} 
+        <img src="static/images/book.png" alt="Book cover image" class="book-image" />
+        {% endif %}
         <div class="book-info">
           <h3 class="book-title">{{ product.name }}</h3>
           <p class="book-author">{{ product.author }}</p>
           <p class="book-price">Rs.{{ product.price }}</p> <!-- Display price -->
           <p class="book-feature">{{ product.feature }}</p> <!-- Display feature -->
-          <button onclick="redirectToBookPage('{{ product.id }}')" class="view-details-btn">View Details</button>
-          <!-- Replace the "Add to Cart" button with the "+" button -->
+          <button onclick="redirectToBookPage('{{ product.id }}', '{{ product.feature }}')"
+            class="view-details-btn">View Details</button>
           <button onclick="addToCart('{{ product.id }}')" class="add-to-cart-btn"><i class="fas fa-plus"></i></button>
         </div>
       </div>
@@ -299,11 +308,11 @@
       if (confirm('Are you sure you want to logout?')) {
         window.location.href = "/logout"; // Update this URL to your logout endpoint
       }
+      function redirectToBookPage(bookId) {
+            console.log('Book ID:', bookId);
+            window.location.href = '/home/book/${bookId}';
+        }
     }
-    function redirectToBookPage(productId) {
-      window.location.href = "/book/" + productId;
-  }
-
   </script>
 </body>
 

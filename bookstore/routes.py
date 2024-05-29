@@ -1,7 +1,7 @@
 from flask import render_template, request, redirect, url_for, session, flash
-from werkzeug.security import check_password_hash, generate_password_hash
 import bcrypt
 import logging
+from bson import ObjectId
 from .database import init_db, get_db, close_db
 
 def init_routes(app, db):
@@ -16,10 +16,10 @@ def init_routes(app, db):
             login_user = users.find_one({'_id': request.form['email']})
             if login_user and bcrypt.checkpw(request.form['password'].encode('utf-8'), login_user['hashedPassword'].encode('utf-8')):
                 session['email'] = request.form['email']
-                return redirect(url_for('home'))  # Redirect to home page after successful login
+                return redirect(url_for('home'))
             else:
                 flash('Invalid email/password combination')
-                return render_template('login.html')  # Render login template with error message if credentials are incorrect
+                return render_template('login.html')
         return render_template('login.html')
 
     @app.route('/register', methods=['GET', 'POST'], endpoint='register')
@@ -43,39 +43,27 @@ def init_routes(app, db):
                         'city': request.form['city'],
                         'province': request.form['province'],
                         'zip': request.form['zip']
-                    },
-                    'shippingaddress': {
-                        'country': request.form['country'],
-                        'street1': request.form['street1'],
-                        'street2': request.form['street2'],
-                        'city': request.form['city'],
-                        'province': request.form['province'],
-                        'zip': request.form['zip']
                     }
                 }
                 users.insert_one(user_data)
                 session['email'] = request.form['email']
-                return redirect(url_for('login'))  # Redirect to login page after successful registration
+                return redirect(url_for('login'))
         return render_template('register.html')
 
     @app.route('/home', endpoint='home')
     def home():
         try:
-            # Fetch product data from MongoDB
             products = db.products.find()
-
-            # Iterate over products and extract relevant information
             product_list = []
             for product in products:
-                # Iterate over SKUs
                 for sku in product.get('skus', []):
                     product_info = {
                         'id': str(product['_id']),
                         'name': product['name'],
                         'author': product['author'],
-                        'price': sku['Price'],  # Get price from SKU
+                        'price': sku['Price'],
                         'feature': sku['feature'],
-                        'image_url': product.get('image_url')  # Get image URL from product
+                        'image_url': product.get('image_url')
                     }
                     product_list.append(product_info)
             logging.info(f"Fetched {len(product_list)} products from MongoDB")
@@ -94,22 +82,22 @@ def init_routes(app, db):
         flash('Invalid email/password combination')
         return redirect(url_for('login'))
     
-    @app.route('/book/<int:product_id>')
+    @app.route('/home/book/<string:product_id>', endpoint='book_details')
     def book_details(product_id):
         try:
-            book = db.products.find_one({'_id': product_id})
+            book = db.products.find_one({'_id': ObjectId(product_id)})
+            if not book:
+                flash('Book not found')
+                return redirect(url_for('home'))
             return render_template('productinfo.html', book=book)
         except Exception as e:
             logging.error(f"Error fetching book details: {e}")
-            # Handle error appropriately, for example, redirect to home page with a flash message
             flash('Error fetching book details')
             return redirect(url_for('home'))
-    
+
     @app.route('/home/my_account', endpoint='my_account')
     def my_account():
-        # Check if the referrer is the home page
         if request.referrer and url_for('home') in request.referrer:
-            # Fetch user details from the database based on the current session's email
             if 'email' in session:
                 user = db.users.find_one({'_id': session['email']})
                 if user:
@@ -121,10 +109,9 @@ def init_routes(app, db):
                 flash('Please log in to access your account')
                 return redirect(url_for('login'))
         else:
-            # If not coming from the home page, redirect to the home page
             flash('Access denied')
             return redirect(url_for('home'))
-        
+
     @app.route('/home/edit_account', methods=['GET', 'POST'], endpoint='edit_account')
     def edit_account():
         if 'email' not in session:
@@ -137,7 +124,6 @@ def init_routes(app, db):
             return redirect(url_for('home'))
 
         if request.method == 'POST':
-            # Update user information based on form input
             new_data = {
                 'firstName': request.form['firstName'],
                 'lastName': request.form['lastName'],
@@ -157,9 +143,7 @@ def init_routes(app, db):
 
         return render_template('edit_account.html', user=user)
 
-
-
-    @app.route('/home/change_password', methods=['GET', 'POST'])
+    @app.route('/home/change_password', methods=['GET', 'POST'], endpoint='change_password')
     def change_password():
         if 'email' not in session:
             flash('Please log in to change your password')
@@ -175,24 +159,17 @@ def init_routes(app, db):
             new_password = request.form['newPassword']
             confirm_password = request.form['confirmPassword']
 
-            # Check if the current password is correct
             if not bcrypt.checkpw(current_password.encode('utf-8'), user['hashedPassword'].encode('utf-8')):
                 flash('Current password is incorrect')
                 return render_template('change_password.html', user=user)
 
-            # Check if the new password and confirm password match
             if new_password != confirm_password:
                 flash('New password and confirm password do not match')
                 return render_template('change_password.html', user=user)
 
-            # Update the user's password
             new_hashed_password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
             db.users.update_one({'_id': session['email']}, {'$set': {'hashedPassword': new_hashed_password.decode('utf-8')}})
             flash('Password changed successfully')
             return redirect(url_for('my_account'))
 
         return render_template('change_password.html', user=user)
-
-
-
-
