@@ -162,24 +162,24 @@
 
         .add-to-cart {
             position: absolute;
-            bottom: 30px;
-            right: 30px;
+            bottom: 20px;
+            right: 20px;
             background-color: #838586;
             color: white;
-            padding: 15px 30px;
+            padding: 10px 20px;
             border: none;
-            border-radius: 8px;
+            border-radius: 5px;
             cursor: pointer;
-            font-size: 1.6rem;
+            font-size: 16px;
             transition: background-color 0.3s, transform 0.3s;
             display: flex;
             align-items: center;
         }
 
         .add-to-cart img {
-            width: 30px;
-            height: 30px;
-            margin-right: 15px;
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
         }
 
         .add-to-cart:hover {
@@ -233,9 +233,11 @@
                 <p><strong>Quantity:</strong> {{ book.quantity }}</p>
                 <p><strong>Feature:</strong> {{ book.feature }}</p>
             </div>
-            <button
-                onclick="addToCart('{{ book.bookId }}', '{{ book.name }}', '{{ book.price }}', '{{ book.image_url }}', '{{ book.author }}', '{{ book.feature }}')"
-                class="add-to-cart-btn"><i class="fas fa-plus"></i></button>
+            <button class="add-to-cart"
+                onclick="addToCart('{{ book.bookId }}', '{{ book.name }}', '{{ book.price }}', '{{ book.image_url }}', '{{ book.author }}', '{{ book.feature }}')">
+                <img src="http://localhost:9000/products/cart related/add to cart.png" alt="Cart Icon">
+                Add to Cart
+            </button>
         </div>
     </div>
     <footer class="footer">
@@ -276,22 +278,18 @@
                 });
         }
 
-
         function confirmLogout() {
             if (confirm('Online Bookstore isn\'t the same without you. Are you sure you want to logout?')) {
                 window.location.href = "/";
             }
         }
-
         function toggleDropdown(event) {
             event.stopPropagation();
             var dropdown = event.target.nextElementSibling;
             var isOpen = dropdown.style.display === 'block';
             closeAllDropdowns();
             dropdown.style.display = isOpen ? 'none' : 'block';
-        }
-
-        // Close all dropdowns
+        }// Close all dropdowns
         function closeAllDropdowns() {
             var dropdowns = document.querySelectorAll('.dropdown-content');
             dropdowns.forEach(function (dropdown) {
