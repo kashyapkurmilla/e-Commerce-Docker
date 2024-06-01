@@ -1,36 +1,280 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>{{ book.name }} - Book Details</title>
-    <link rel="stylesheet" href="https://cdn.tailwindcss.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Details</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            margin: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: white;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .logo img {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            flex-grow: 1;
+            justify-content: flex-end;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #333;
+            font-size: 1rem;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-link i {
+            margin-right: 8px;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -3px;
+            left: 50%;
+            background-color: black;
+            transition: width 0.3s, left 0.3s;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+            left: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            padding-top: 100px;
+            /* Add padding to prevent content from hiding under the fixed header */
+            flex: 1;
+        }
+
+        .book-container {
+            display: flex;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            position: relative;
+            align-items: flex-start;
+        }
+
+        .book-image {
+            flex: 1;
+            max-width: 300px;
+            margin-right: 20px;
+        }
+
+        .book-image img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+
+        .book-details {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            margin-bottom: 10px;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: white;
+            min-width: 200px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .add-to-cart {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background-color: #838586;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s, transform 0.3s;
+            display: flex;
+            align-items: center;
+        }
+
+        .add-to-cart img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+        }
+
+        .add-to-cart:hover {
+            background-color: #686a6d;
+            transform: scale(1.05);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 2rem;
+            color: #666;
+            padding: 1rem;
+            background-color: #f4f4f4;
+            width: 100%;
+            flex-shrink: 0;
+        }
+    </style>
 </head>
+
 <body>
-    <div class="container mx-auto p-4">
-        <h1 class="text-3xl font-bold">{{ book.name }}</h1>
-        <img src="{{ book.image_url }}" alt="{{ book.name }}" class="w-1/4 mt-4">
-        <p class="text-xl mt-4">by {{ book.author }}</p>
-        <p class="text-lg mt-2">{{ book.description }}</p>
-        <p class="text-2xl font-bold mt-4">${{ book.price }}</p>
-        <button onclick="addToCart({{ book.id }})" class="mt-4 bg-green-500 text-white py-2 px-4 rounded">Add to Cart</button>
+    <header class="header">
+        <div class="logo">
+            <img src="http://localhost:9000/products/products/logo.png" alt="Logo">
+            Online Bookstore
+        </div>
+        <nav class="nav">
+            <a href="/home" class="nav-link"><i class="fas fa-home"></i> Home</a>
+            <div class="dropdown">
+                <a href="#" class="nav-link" onclick="toggleDropdown(event)"><i class="fas fa-user"></i> My
+                    Account</i></a>
+                <div class="dropdown-content">
+                    <a href="/home/edit_account"><i class="fas fa-edit"></i> Edit Account</a>
+                    <a href="/home/change_password"><i class="fas fa-key"></i> Change Password</a>
+                    <a href="/home/view_orders"><i class="fas fa-box"></i> View Orders</a>
+                    <a href="#" onclick="confirmLogout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <div class="book-container">
+            <div class="book-image">
+                <img src="{{ book.image_url }}" alt="Book cover image">
+            </div>
+            <div class="book-details">
+                <h1>{{ book.name }}</h1>
+                <p><strong>Author:</strong> {{ book.author }}</p>
+                <p><strong>Description:</strong> {{ book.description }}</p>
+                <p><strong>Genre:</strong> {{ book.genre }}</p>
+                <p><strong>Price:</strong> ${{ book.price }}</p>
+                <p><strong>Quantity:</strong> {{ book.quantity }}</p>
+                <p><strong>Feature:</strong> {{ book.feature }}</p>
+            </div>
+            <button class="add-to-cart" onclick="addToCart()">
+                <img src="http://localhost:9000/products/cart related/add to cart.png" alt="Cart Icon">
+                Add to Cart
+            </button>
+        </div>
     </div>
+    <footer class="footer">
+        <p>&copy; 2024 Online Bookstore</p>
+    </footer>
+
     <script>
-        function addToCart(productId) {
-            fetch(`/add_to_cart/${productId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                alert(data.message);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Failed to add item to cart.');
+        function addToCart() {
+            alert('Added to cart!');
+            // Implement actual add to cart functionality here
+        }
+
+        function confirmLogout() {
+            if (confirm('Online Bookstore isn\'t the same without you. Are you sure you want to logout?')) {
+                window.location.href = "/";
+            }
+        }
+        function toggleDropdown(event) {
+            event.stopPropagation();
+            var dropdown = event.target.nextElementSibling;
+            var isOpen = dropdown.style.display === 'block';
+            closeAllDropdowns();
+            dropdown.style.display = isOpen ? 'none' : 'block';
+        }// Close all dropdowns
+        function closeAllDropdowns() {
+            var dropdowns = document.querySelectorAll('.dropdown-content');
+            dropdowns.forEach(function (dropdown) {
+                dropdown.style.display = 'none';
             });
         }
+
+        // Close dropdown on outside click
+        document.addEventListener('click', function (event) {
+            if (!event.target.matches('.nav-link')) {
+                closeAllDropdowns();
+            }
+        });
     </script>
 </body>
+
 </html>

@@ -82,18 +82,6 @@ def init_routes(app, db):
         flash('Invalid email/password combination')
         return redirect(url_for('login'))
     
-    @app.route('/home/book/<string:product_id>', endpoint='book_details')
-    def book_details(product_id):
-        try:
-            book = db.products.find_one({'_id': ObjectId(product_id)})
-            if not book:
-                flash('Book not found')
-                return redirect(url_for('home'))
-            return render_template('productinfo.html', book=book)
-        except Exception as e:
-            logging.error(f"Error fetching book details: {e}")
-            flash('Error fetching book details')
-            return redirect(url_for('home'))
 
     @app.route('/home/my_account', endpoint='my_account')
     def my_account():
@@ -173,3 +161,44 @@ def init_routes(app, db):
             return redirect(url_for('my_account'))
 
         return render_template('change_password.html', user=user)
+    
+    # @app.route('/home/book_details', methods=['GET'])
+    # def book_details():
+    #     book_id = request.args.get('bookId')
+    #     feature = request.args.get('feature')
+    #     # Fetch more book details from the database if needed using book_id
+    #     return render_template('book_details.html', book_id=book_id, book_feature=feature)
+
+    @app.route('/home/book_details', methods=['GET'])
+    def book_details():
+        book_id = request.args.get('bookId')
+        feature = request.args.get('feature')
+        
+        try:
+            book = db.products.find_one({'_id': ObjectId(book_id)})
+            if not book:
+                flash('Book not found')
+                return redirect(url_for('home'))
+            
+            # Find the specific SKU
+            sku = next((s for s in book['skus'] if s['feature'] == feature), None)
+            if not sku:
+                flash('Feature not found')
+                return redirect(url_for('home'))
+
+            book_details = {
+                'name': book['name'],
+                'author': book['author'],
+                'description': book.get('description', 'No description available'),
+                'genre': book.get('genre', 'Unknown'),
+                'price': sku['Price'],
+                'quantity': sku['quantity'],
+                'feature': sku['feature'],
+                'image_url': book.get('image_url', 'static/images/book.png')
+            }
+            
+            return render_template('book_details.html', book=book_details)
+        except Exception as e:
+            logging.error(f"Error fetching book details: {e}")
+            flash('Error fetching book details')
+            return redirect(url_for('home'))
