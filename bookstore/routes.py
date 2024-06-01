@@ -189,6 +189,7 @@ def init_routes(app, db):
                 return redirect(url_for('home'))
 
             book_details = {
+                'bookId':book['_id'],
                 'name': book['name'],
                 'author': book['author'],
                 'description': book.get('description', 'No description available'),
