@@ -1,8 +1,10 @@
-from flask import render_template, request, redirect, url_for, session, flash
+from flask import render_template, request, redirect, url_for, session, flash , jsonify
 import bcrypt
 import logging
 from bson import ObjectId
 from .database import init_db, get_db, close_db
+
+logging.basicConfig(level=logging.DEBUG)
 
 def init_routes(app, db):
     @app.route('/')
@@ -202,3 +204,71 @@ def init_routes(app, db):
             logging.error(f"Error fetching book details: {e}")
             flash('Error fetching book details')
             return redirect(url_for('home'))
+            
+    @app.route('/home/add_to_cart', methods=['POST'])
+    def add_to_cart():
+        try:
+            data = request.json
+            logging.debug(f'Received data: {data}')
+            
+            user_id = data.get('userId')
+            product_id = ObjectId(data.get('bookId'))
+            product_name = data.get('bookName', 'Unknown')  # Provide a default value
+            author = data.get('author', 'Unknown')  # Provide a default value
+            price = data.get('price')  # Provide a default value
+            image_url = data.get('imageUrl', '')  # Provide a default value
+            feature = data.get('feature', 'Unknown')  # Provide a default value
+
+            existing_cart = db.cart_items.find_one({'user_id': user_id})
+            logging.debug(f'Existing cart: {existing_cart}')
+            
+            if existing_cart:
+                item_index = next((index for (index, item) in enumerate(existing_cart['items'])
+                                if item['product_id'] == product_id and item['book_feature'] == feature), None)
+                if item_index is not None:
+                    # If the item exists, increment the quantity
+                    result = db.cart_items.update_one(
+                        {'user_id': user_id, f'items.{item_index}.product_id': product_id, f'items.{item_index}.book_feature': feature},
+                        {'$inc': {f'items.{item_index}.quantity': 1}}
+                    )
+                    logging.debug(f'Incremented quantity result: {result.modified_count}')
+                else:
+                    # Add a new item if it does not exist
+                    result = db.cart_items.update_one(
+                        {'user_id': user_id},
+                        {'$push': {
+                            'items': {
+                                'product_id': product_id,
+                                'product_name': product_name,
+                                'author': author,
+                                'price': price,
+                                'quantity': 1,
+                                'image_url': image_url,
+                                'book_feature': feature
+                            }
+                        }}
+                    )
+                    logging.debug(f'Added new item result: {result.modified_count}')
+            else:
+                # Create a new cart for the user
+                new_cart = {
+                    'user_id': user_id,
+                    'items': [
+                        {
+                            'product_id': product_id,
+                            'product_name': product_name,
+                            'author': author,
+                            'price': price,
+                            'quantity': 1,
+                            'image_url': image_url,
+                            'book_feature': feature
+                        }
+                    ]
+                }
+                result = db.cart_items.insert_one(new_cart)
+                logging.debug(f'Inserted new cart result: {result.inserted_id}')
+
+            return jsonify({'message': 'Item added to cart successfully!'}), 200
+        except Exception as e:
+            logging.error(f'Error: {str(e)}')
+            return jsonify({'error': str(e)}), 500

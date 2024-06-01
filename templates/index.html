@@ -243,7 +243,7 @@
             <a href="#" onclick="filterBooks('hard cover')"><i class="fas fa-book"></i> Hard Copy</a>
           </div>
         </div>
-        <a href="/view_cart" class="nav-link" ><i class="fas fa-shopping-cart"></i> View
+        <a href="/view_cart" class="nav-link"><i class="fas fa-shopping-cart"></i> View
           Cart</a>
         <div class="dropdown">
           <a href="#" class="nav-link" onclick="toggleDropdown(event)"><i class="fas fa-user"></i> My Account</a>
@@ -272,7 +272,9 @@
           <p class="book-feature">{{ product.feature }}</p> <!-- Display feature -->
           <button onclick="redirectToBookPage('{{ product.id }}', '{{ product.feature }}')"
             class="view-details-btn">View Details</button>
-          <button onclick="addToCart('{{ product.id }}')" class="add-to-cart-btn"><i class="fas fa-plus"></i></button>
+          <button
+          onclick="addToCart('{{ product.id}}', '{{ product.name}}', '{{ product.price}}', '{{ product.image_url}}', '{{ product.author}}', '{{ product.feature}}')" 
+          class="add-to-cart-btn"><i class="fas fa-plus"></i></button>
         </div>
       </div>
       {% endfor %}
@@ -327,7 +329,43 @@
       window.location.href = url.toString();
     }
 
+    function addToCart(bookId, bookName, price, imageUrl, author, feature) {
+      const userId = '{{ session["email"] }}'; // Assuming you store the user's email as the ID
+
+      const data = {
+        userId: userId,
+        bookId: bookId,
+        bookName: bookName,
+        price: price,
+        imageUrl: imageUrl,
+        author: author,
+        feature: feature
+      };
+
+      fetch('/home/add_to_cart', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+        .then(response => {
+          if (response.ok) {
+            alert('Item added to cart successfully!');
+          } else {
+            alert('Failed to add item to cart.');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    }
   </script>
+</body>
+
+</html>
+
+</script>
 </body>
 
 </html>

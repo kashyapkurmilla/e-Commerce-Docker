@@ -233,10 +233,9 @@
                 <p><strong>Quantity:</strong> {{ book.quantity }}</p>
                 <p><strong>Feature:</strong> {{ book.feature }}</p>
             </div>
-            <button class="add-to-cart" onclick="addToCart()">
-                <img src="http://localhost:9000/products/cart related/add to cart.png" alt="Cart Icon">
-                Add to Cart
-            </button>
+            <button
+            onclick="addToCart('{{book.id}}', '{{book.name}}', '{{book.price}}', '{{book.image_url}}', '{{book.author}}', '{{book.feature}}')" 
+            class="add-to-cart-btn"><i class="fas fa-plus"></i></button>
         </div>
     </div>
     <footer class="footer">
@@ -244,11 +243,37 @@
     </footer>
 
     <script>
-        function addToCart() {
-            alert('Added to cart!');
-            // Implement actual add to cart functionality here
-        }
+        function addToCart(bookId, bookName, price, imageUrl, author, feature) {
+            const userId = '{{ session["email"] }}'; // Assuming you store the user's email as the ID
 
+            const data = {
+                userId: userId,
+                bookId: bookId,
+                bookName: bookName,
+                price: price,
+                imageUrl: imageUrl,
+                author: author,
+                feature: feature
+            };
+
+            fetch('/home/add_to_cart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Item added to cart successfully!');
+                    } else {
+                        alert('Failed to add item to cart.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
         function confirmLogout() {
             if (confirm('Online Bookstore isn\'t the same without you. Are you sure you want to logout?')) {
                 window.location.href = "/";
@@ -265,7 +290,7 @@
             var dropdowns = document.querySelectorAll('.dropdown-content');
             dropdowns.forEach(function (dropdown) {
                 dropdown.style.display = 'none';
-            }); 
+            });
         }
 
         // Close dropdown on outside click
