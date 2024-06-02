@@ -2,26 +2,37 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <title>Cart - Online Bookstore</title>
-  <link rel="stylesheet" href="https://cdn.tailwindcss.com" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>View Cart</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
   <style>
     body {
-      font-family: 'Helvetica', 'Arial', sans-serif;
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 2rem;
+      background: #f3f4f6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Roboto', sans-serif;
+      font-size: 0.9rem;
+      font-weight: bold;
+      color: #333;
     }
 
     .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: white;
+      z-index: 1000;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 2rem;
+      padding: 1rem 2rem;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     }
 
     .logo {
@@ -39,93 +50,470 @@
 
     .nav {
       display: flex;
-      gap: 2rem;
+      align-items: center;
+      gap: 2.5em;
     }
 
     .nav-link {
       text-decoration: none;
-      color: #000;
-      font-size: 1rem;
-    }
-
-    .nav-link:hover {
       color: #333;
+      font-size: 1rem;
+      position: relative;
+      display: flex;
+      align-items: center;
     }
 
-    .main {
+    .nav-link i {
+      margin-right: 8px;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -3px;
+      left: 50%;
+      background-color: black;
+      transition: width 0.3s, left 0.3s;
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+      left: 0;
+    }
+
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      right: 0;
+      background-color: #f9f9f9;
+      min-width: 200px;
+      box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+      z-index: 1;
+      margin-top: 10px;
+      border-radius: 8px;
+    }
+
+    .dropdown-content a {
+      color: black;
+      padding: 12px 16px;
+      text-decoration: none;
       display: flex;
-      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+
+    .dropdown-content a i {
+      margin-right: 8px;
+    }
+
+    .dropdown-content a::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -3px;
+      left: 50%;
+      background-color: black;
+      transition: width 0.3s, left 0.3s;
+    }
+
+    .dropdown-content a:hover {
+      background-color: #d4cbcb;
+    }
+
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+
+    .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      max-width: 1700px;
+      width: 100%;
+      padding: 2rem;
       gap: 2rem;
+      margin-top: 5rem;
+      margin-bottom: 5rem;
+    }
+
+    .card {
+      flex: 3;
+      box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.1);
+      border-radius: 1rem;
+      background-color: white;
+      overflow: hidden;
+      padding: 2rem;
+    }
+
+    .summary-card {
+      flex: 2;
+      box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.1);
+      border-radius: 1rem;
+      background-color: white;
+      overflow: hidden;
+      padding: 2rem;
+    }
+
+    .title {
+      margin-bottom: 2rem;
+    }
+
+    .title h4 {
+      font-size: 1.5rem;
     }
 
     .cart-item {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      padding: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 5px;
+      padding: 1rem 0;
+      border-bottom: 1px solid #e5e7eb;
+      position: relative;
     }
 
-    .cart-item-info {
+    .cart-item:last-child {
+      border-bottom: none;
+    }
+
+    .cart-item img {
+      width: 60px;
+      height: auto;
+      border-radius: 0.5rem;
+    }
+
+    .cart-item-details {
+      flex: 1;
+      margin-left: 1rem;
+    }
+
+    .cart-item-details div {
+      margin-bottom: 0.5rem;
+    }
+
+    .cart-item-actions {
       display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
+      align-items: center;
+      gap: 1rem;
     }
 
-    .cart-item-title {
-      font-size: 1.2rem;
-      font-weight: bold;
+    .cart-item-actions a {
+      padding: 0.2rem 0.5rem;
+      background-color: #e5e7eb;
+      border-radius: 0.25rem;
+      color: #333;
+      text-decoration: none;
     }
 
-    .cart-item-author {
-      font-size: 1rem;
-      color: #666;
+    .cart-item-actions a:hover {
+      background-color: #d1d5db;
     }
 
     .cart-item-price {
+      font-size: 1rem;
+      margin-right: 1rem;
+      margin-left: 50px;
+    }
+
+    .cart-item-remove {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      cursor: pointer;
       font-size: 1.2rem;
-      font-weight: bold;
-      color: #333;
+    }
+
+    .summary h5 {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .summary hr {
+      margin: 1.5rem 0;
+    }
+
+    .summary .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .summary select,
+    .summary input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #d1d5db;
+      border-radius: 0.5rem;
+    }
+
+    .summary .total {
+      display: flex;
+      justify-content: space-between;
+      padding: 1.5rem 0;
+      font-size: 2rem;
+    }
+
+    .btn-checkout {
+      width: 100%;
+      padding: 1rem;
+      background-color: #1f2937;
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      cursor: pointer;
+      text-transform: uppercase;
+      margin-top: 1.5rem;
+    }
+
+    .btn-checkout:hover {
+      background-color: #111827;
+    }
+
+    .back-to-shop {
+      margin-top: 1rem;
+    }
+
+    .back-to-shop a {
+      text-decoration: none;
+      color: #1f2937;
+    }
+
+    .back-to-shop a:hover {
+      color: #111827;
     }
 
     .footer {
       text-align: center;
-      margin-top: 2rem;
+      width: 100%;
+      padding: 1rem;
+      background-color: white;
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+      position: fixed;
+      bottom: 0;
+      left: 0;
     }
   </style>
 </head>
 
 <body>
-  <div class="container">
-    <header class="header">
-      <div class="logo">
-        <img src="http://localhost:9000/products/products/logo.png" alt="Logo" />
-        Online Bookstore
+  <header class="header">
+    <div class="logo">
+      <img src="http://localhost:9000/products/products/logo.png" alt="Logo">
+      Online Bookstore
+    </div>
+    <nav class="nav">
+      <a href="/home" class="nav-link"><i class="fas fa-home"></i> Home</a>
+      <div class="dropdown">
+        <a href="#" class="nav-link" onclick="toggleDropdown(event)"><i class="fas fa-user"></i> My Account</a>
+        <div class="dropdown-content">
+          <a href="/home/edit_account"><i class="fas fa-edit"></i> Edit Account</a>
+          <a href="/home/change_password"><i class="fas fa-key"></i> Change Password</a>
+          <a href="/home/view_orders"><i class="fas fa-box"></i> View Orders</a>
+          <a href="#" onclick="confirmLogout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
       </div>
-      <nav class="nav">
-        <a href="/" class="nav-link">Home</a>
-        <a href="/view_cart" class="nav-link">
-          <i class="fas fa-shopping-cart"></i> View Cart
-        </a>
-      </nav>
-    </header>
-    <main class="main">
+    </nav>
+  </header>
+
+  <div class="container">
+    <div class="card">
+      <div class="title">
+        <div class="row">
+          <div class="col">
+            <h4><b>Shopping Cart</b></h4>
+          </div>
+          <div class="col align-self-center text-right text-muted">{{ cart_items|length }} items</div>
+        </div>
+      </div>
+      {% if cart_items %}
       {% for item in cart_items %}
       <div class="cart-item">
-        <div class="cart-item-info">
-          <div class="cart-item-title">{{ item.name }}</div>
-          <div class="cart-item-author">{{ item.author }}</div>
-          <div class="cart-item-price">Rs.{{ item.price }}</div>
+        <div class="cart-item-img">
+          <img src="{{ item.image_url }}" alt="Book Image">
+        </div>
+        <div class="cart-item-details">
+          <div class="cart-item-name">{{ item.product_name }}</div>
+          <div class="cart-item-author text-muted">{{ item.author }}</div>
+          <div class="cart-item-author text-muted">{{ item.book_feature }}</div>
+        </div>
+        <div class="cart-item-actions">
+          <a href="#" onclick="decreaseQuantity('{{ item.product_id }}', '{{ item.book_feature }}')">-</a>
+          <span>{{ item.quantity }}</span>
+          <a href="#" onclick="increaseQuantity('{{ item.product_id }}', '{{ item.book_feature }}')">+</a>
+
+        </div>
+        <div class="cart-item-price">Rs.{{ item.price }}</div>
+        <div class="cart-item-remove" onclick="removeFromCart('{{ item.product_id }}', '{{ item.book_feature }}')">
+          &times;
         </div>
       </div>
       {% endfor %}
-    </main>
-    
-    <footer class="footer">
-      <p>Copyright &copy; 2023 Online Bookstore</p>
-    </footer>
+      {% else %}
+      <p>Your cart is empty.</p>
+      {% endif %}
+      <div class="back-to-shop"><a href="/home">&leftarrow;</a><span class="text-muted"> Back to shop</span></div>
+    </div>
+
+    <div class="summary-card">
+      <h5><strong>Summary</strong></h5>
+      <hr>
+      <div class="row">
+        <div class="col" style="padding-left:0;">ITEMS {{ cart_items|length }}</div>
+        <div class="col text-right">Rs.{{ total_price }}</div>
+      </div>
+      <div class="form-group">
+        <p>SHIPPING</p>
+        <select>
+          <option class="text-muted">Standard-Delivery - Rs.15.70</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <p>GIVE CODE</p>
+        <input id="code" placeholder="Enter your code">
+      </div>
+      <div class="total">
+        <div>TOTAL PRICE</div>
+        <div>Rs.{{ total_price + 15.70 }}</div>
+      </div>
+      <button class="btn-checkout">CHECKOUT</button>
+    </div>
   </div>
+
+  <footer class="footer">
+    <p>© 2024 Online Bookstore. All rights reserved.</p>
+  </footer>
+
+  <script>
+    function removeFromCart(itemId) {
+      const userId = '{{ session["email"] }}';
+
+      const data = {
+        userId: userId,
+        itemId: itemId
+      };
+      fetch('/home/remove_from_cart', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+        .then(response => {
+          if (response.ok) {
+            alert('Item removed from cart successfully!');
+            location.reload();
+          } else {
+            alert('Failed to remove item from cart.');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Failed to remove item from cart. Please try again later.');
+        });
+    }
+
+    function confirmLogout() {
+      if (confirm('Online Bookstore isn\'t the same without you. Are you sure you want to logout?')) {
+        window.location.href = "/";
+      }
+    }
+    function applyDiscount() {
+      // Implement logic to apply discount
+    }
+
+    function toggleDropdown(event) {
+      event.stopPropagation();
+      var dropdown = event.target.nextElementSibling;
+      var isOpen = dropdown.style.display === 'block';
+      closeAllDropdowns();
+      dropdown.style.display = isOpen ? 'none' : 'block';
+    }
+
+    function closeAllDropdowns() {
+      var dropdowns = document.querySelectorAll('.dropdown-content');
+      dropdowns.forEach(function (dropdown) {
+        dropdown.style.display = 'none';
+      });
+    }
+
+    document.addEventListener('click', function (event) {
+      if (!event.target.matches('.nav-link')) {
+        closeAllDropdowns();
+      }
+    });
+    function decreaseQuantity(itemId, feature) {
+      updateQuantity(itemId, feature, 'decrease');
+    }
+
+    function increaseQuantity(itemId, feature) {
+      updateQuantity(itemId, feature, 'increase');
+    }
+
+    function updateQuantity(itemId, feature, action) {
+      const userId = '{{ session["email"] }}';
+
+      const data = {
+        userId: userId,
+        itemId: itemId,
+        feature: feature,
+        action: action
+      };
+
+      fetch('/home/change_quantity', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+        .then(response => {
+          if (response.ok) {
+            location.reload(); // Refresh the page to reflect the updated quantity
+          } else {
+            alert('Failed to update item quantity.');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Failed to update item quantity. Please try again later.');
+        });
+    }
+    function removeFromCart(itemId, feature) {
+      const userId = '{{ session["email"] }}';
+
+      const data = {
+        userId: userId,
+        itemId: itemId,
+        feature: feature
+      };
+      fetch('/home/remove_from_cart', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+        .then(response => {
+          if (response.ok) {
+            // Reload the page to reflect the updated cart
+            location.reload();
+          } else {
+            alert('Failed to remove item from cart.');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Failed to remove item from cart. Please try again later.');
+        });
+    }
+
+
+  </script>
 </body>
 
 </html>

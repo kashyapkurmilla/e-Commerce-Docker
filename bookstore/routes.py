@@ -273,3 +273,94 @@ def init_routes(app, db):
         except Exception as e:
             logging.error(f'Error: {str(e)}')
             return jsonify({'error': str(e)}), 500
+        
+
+    @app.route('/home/view_cart', endpoint='view_cart')
+    def view_cart():
+        try:
+            if 'email' in session:
+                user_id = session['email']
+                cart = db.cart_items.find_one({'user_id': user_id})
+                if cart:
+                    cart_items = cart.get('items', [])
+                    total_price = sum(int(item['price']) * item['quantity'] for item in cart_items)
+                    return render_template('view_cart.html', cart_items=cart_items, total_price=total_price)
+                else:
+                    flash('Your cart is empty')
+                    return render_template('view_cart.html', cart_items=[], total_price=0)
+            else:
+                flash('Please log in to view your cart')
+                return redirect(url_for('login'))
+        except Exception as e:
+            logging.error(f"Error fetching cart items: {e}")
+            flash('Error fetching cart items')
+            return redirect(url_for('home'))
+
+
+    @app.route('/home/change_quantity', methods=['POST'])
+    def change_quantity():
+        try:
+            data = request.json
+            user_id = session.get('email')
+            if not user_id:
+                return jsonify({'error': 'User not logged in'}), 401
+
+            item_id = ObjectId(data.get('itemId'))
+            feature = data.get('feature')
+            action = data.get('action')
+
+            # Find the user's cart
+            cart = db.cart_items.find_one({'user_id': user_id})
+            if not cart:
+                return jsonify({'error': 'Cart not found for user'}), 404
+
+            # Find the item in the cart
+            item_index = next((index for (index, item) in enumerate(cart['items'])
+                            if item['product_id'] == item_id and item['book_feature'] == feature), None)
+            if item_index is None:
+                return jsonify({'error': 'Item not found in cart'}), 404
+
+            # Update the quantity based on the action (increase or decrease)
+            if action == 'increase':
+                cart['items'][item_index]['quantity'] += 1
+            elif action == 'decrease':
+                if cart['items'][item_index]['quantity'] > 1:
+                    cart['items'][item_index]['quantity'] -= 1
+                else:
+                    # If quantity is already 1 and user tries to decrease, remove the item from the cart
+                    del cart['items'][item_index]
+
+            # Update the cart in the database
+            db.cart_items.update_one({'user_id': user_id}, {'$set': {'items': cart['items']}})
+
+            return '', 200
+        except Exception as e:
+            logging.error(f"Error updating item quantity: {e}")
+            return jsonify({'error': str(e)}), 500
+
+    @app.route('/home/remove_from_cart', methods=['POST'])
+    def remove_from_cart():
+        try:
+            data = request.json
+            user_id = session.get('email')
+            if not user_id:
+                return jsonify({'error': 'User not logged in'}), 401
+
+            item_id = ObjectId(data.get('itemId'))
+            feature = data.get('feature')
+
+            # Find the user's cart
+            cart = db.cart_items.find_one({'user_id': user_id})
+            if not cart:
+                return jsonify({'error': 'Cart not found for user'}), 404
+
+            # Remove the item from the cart
+            cart['items'] = [item for item in cart['items'] if item['product_id'] != item_id or item['book_feature'] != feature]
+
+            # Update the cart in the database
+            db.cart_items.update_one({'user_id': user_id}, {'$set': {'items': cart['items']}})
+
+            return '', 200  # Empty response with status code 200
+        except Exception as e:
+            logging.error(f"Error removing item from cart: {e}")
+            return jsonify({'error': str(e)}), 500
