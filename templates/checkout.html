@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <title>Checkout</title>
+    <style>
+        body {
+            background: #f3f4f6;
+            min-height: 100vh;
+            font-family: 'Roboto', sans-serif;
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #333;
+            padding-top: 80px;
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: white;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .logo img {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 2.5em;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #333;
+            font-size: 1rem;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-link i {
+            margin-right: 8px;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -3px;
+            left: 50%;
+            background-color: black;
+            transition: width 0.3s, left 0.3s;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+            left: 0;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: #f9f9f9;
+            min-width: 200px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            margin-top: 10px;
+            border-radius: 8px;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .dropdown-content a i {
+            margin-right: 8px;
+        }
+
+        .dropdown-content a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -3px;
+            left: 50%;
+            background-color: black;
+            transition: width 0.3s, left 0.3s;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #d4cbcb;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .checkout-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            /* Increased width */
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .shipping-address,
+        .payment-details {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .payment-details {
+            background-color: #fff;
+            ;
+            /* Adjust color as needed */
+        }
+
+        .shipping-address h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .payment-details h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .address-option {
+            margin-bottom: 15px;
+        }
+
+        .address-option input {
+            display: none;
+            /* Hide the radio buttons */
+        }
+
+        .address-label {
+            cursor: pointer;
+        }
+
+        .address-content {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .address-label:hover .address-content {
+            background-color: #e0e0e0;
+        }
+
+        .address-label input:checked+.address-content {
+            background-color: #28a745;
+            /* Change color to indicate selection */
+            color: #fff;
+        }
+
+        .address-label input:checked+.address-content::before {
+            content: '✔';
+            /* Display a checkmark icon when selected */
+            margin-right: 5px;
+        }
+
+        .new-address-form {
+            margin-top: 20px;
+        }
+
+        .new-address-form input {
+            display: block;
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .pay-btn {
+            background-color: #28a745;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 85px;
+            margin-left: 550px;
+        }
+
+        .pay-btn:hover {
+            background-color: #218838;
+        }
+
+        .add-btn {
+            background-color: #28a745;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .add-btn:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="logo">
+            <img src="http://localhost:9000/products/products/logo.png" alt="Logo">
+            Online Bookstore
+        </div>
+        <nav class="nav">
+            <a href="/home" class="nav-link"><i class="fas fa-home"></i> Home</a>
+            <a href="/home/view_cart" class="nav-link"><i class="fas fa-shopping-cart"></i> View
+                Cart</a>
+            <div class="dropdown">
+                <a href="#" class="nav-link" onclick="toggleDropdown(event)"><i class="fas fa-user"></i> My Account</a>
+                <div class="dropdown-content">
+                    <a href="/home/edit_account"><i class="fas fa-edit"></i> Edit Account</a>
+                    <a href="/home/change_password"><i class="fas fa-key"></i> Change Password</a>
+                    <a href="/home/view_orders"><i class="fas fa-box"></i> View Orders</a>
+                    <a href="#" onclick="confirmLogout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="checkout-container">
+        <div class="shipping-address">
+            <h2>Select Shipping Address</h2>
+            <form id="shipping-address-form">
+                {% for address in shipping_addresses %}
+                <div class="address-option">
+                    <label for="address{{ loop.index }}" class="address-label">
+                        <input type="radio" id="address{{ loop.index }}" name="shipping-address"
+                            value="{{ address.addressId }}" {% if loop.first %}checked{% endif %}>
+                        <div class="address-content">
+                            <p>{{ address.street1 }}, {{ address.street2 }}</p>
+                            <p>{{ address.city }}, {{ address.province }}, {{ address.zip }}</p>
+                            <p>{{ address.country }}</p>
+                        </div>
+                    </label>
+                </div>
+                {% endfor %}
+                <div class="address-option">
+                    <label for="new-address" class="address-label">
+                        <input type="radio" id="new-address" name="shipping-address" value="new">
+                        <div class="address-content">
+                            <p>Add New Address</p>
+                        </div>
+                    </label>
+                </div>
+            </form>
+
+            <div class="new-address-form" id="new-address-form" style="display: none;">
+                <h3>Add New Address</h3>
+                <form id="new-address-form">
+                    <input type="text" id="new-street1" name="street1" placeholder="Street 1" required>
+                    <input type="text" id="new-street2" name="street2" placeholder="Street 2">
+                    <input type="text" id="new-city" name="city" placeholder="City" required>
+                    <input type="text" id="new-province" name="province" placeholder="Province" required>
+                    <input type="text" id="new-zip" name="zip" placeholder="Zip" required>
+                    <input type="text" id="new-country" name="country" placeholder="Country" required>
+                    <button type="button" class="add-btn" id="save-address-btn">Save Address</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="payment-details">
+            <h2>Payment Details</h2>
+            <p>Total Price: Rs.{{ total_price }}</p>
+            <div class="payment-details">
+                <form id="payment-form">
+                    <div id="card-element"></div>
+                    <button class="pay-btn" id="submit">Checkout</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        var stripe = Stripe('your-public-key'); // Replace with your actual Stripe public key
+        var elements = stripe.elements();
+        var cardElement = elements.create('card');
+        cardElement.mount('#card-element');
+
+        var form = document.getElementById('payment-form');
+        form.addEventListener('submit', async function (event) {
+            event.preventDefault();
+            const { token, error } = await stripe.createToken(cardElement);
+            if (error) {
+                console.error(error);
+            } else {
+                var selectedAddress = document.querySelector('input[name="shipping-address"]:checked').value;
+                var orderDetails = {
+                    userId: '{{ user._id }}',
+                    stripeToken: token.id,
+                    totalPrice: '{{ total_price }}',
+                    shippingAddressId: selectedAddress,
+                };
+
+                fetch('/home/confirm_order', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(orderDetails),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            console.error(data.error);
+                        } else {
+                            alert('Payment successful!');
+                        }
+                    })
+                    .catch(error => console.error(error));
+            }
+        });
+
+        var shippingAddressForm = document.getElementById('shipping-address-form');
+        shippingAddressForm.addEventListener('change', function () {
+            var selectedAddress = document.querySelector('input[name="shipping-address"]:checked').value;
+            if (selectedAddress === 'new') {
+                document.getElementById('new-address-form').style.display = 'block';
+            } else {
+                document.getElementById('new-address-form').style.display = 'none';
+            }
+        });
+
+        var saveAddressBtn = document.getElementById('save-address-btn');
+        saveAddressBtn.addEventListener('click', function () {
+            var newAddress = {
+                street1: document.getElementById('new-street1').value,
+                street2: document.getElementById('new-street2').value,
+                city: document.getElementById('new-city').value,
+                province: document.getElementById('new-province').value,
+                zip: document.getElementById('new-zip').value,
+                country: document.getElementById('new-country').value,
+            };
+            fetch('/home/add_shipping_address', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    userId: '{{ user._id }}',
+                    newAddress: newAddress,
+                }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        console.error(data.error);
+                    } else {
+                        alert('New address added successfully!');
+                        location.reload();
+                    }
+                })
+                .catch(error => console.error(error));
+        });
+
+        function toggleDropdown(event) {
+            event.stopPropagation();
+            var dropdown = event.target.nextElementSibling;
+            var isOpen = dropdown.style.display === 'block';
+            closeAllDropdowns();
+            dropdown.style.display = isOpen ? 'none' : 'block';
+        }
+
+        function closeAllDropdowns() {
+            var dropdowns = document.querySelectorAll('.dropdown-content');
+            dropdowns.forEach(function (dropdown) {
+                dropdown.style.display = 'none';
+            });
+        }
+
+        document.addEventListener('click', function (event) {
+            if (!event.target.matches('.nav-link')) {
+                closeAllDropdowns();
+            }
+        });
+    </script>
+</body>
+
+</html>

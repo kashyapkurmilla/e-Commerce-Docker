@@ -1,10 +1,15 @@
-from flask import render_template, request, redirect, url_for, session, flash , jsonify
+from flask import render_template, request, redirect, url_for, session, flash , jsonify 
 import bcrypt
 import logging
 from bson import ObjectId
+from datetime import datetime
 from .database import init_db, get_db, close_db
+import stripe
+import random
+import string
 
 logging.basicConfig(level=logging.DEBUG)
+stripe.api_key = 'privatekey' 
 
 def init_routes(app, db):
     @app.route('/')
@@ -268,6 +273,7 @@ def init_routes(app, db):
                 }
                 result = db.cart_items.insert_one(new_cart)
                 logging.debug(f'Inserted new cart result: {result.inserted_id}')
+            update_total_price(user_id, db)
 
             return jsonify({'message': 'Item added to cart successfully!'}), 200
         except Exception as e:
@@ -280,6 +286,7 @@ def init_routes(app, db):
         try:
             if 'email' in session:
                 user_id = session['email']
+                update_total_price(user_id, db)
                 cart = db.cart_items.find_one({'user_id': user_id})
                 if cart:
                     cart_items = cart.get('items', [])
@@ -332,6 +339,7 @@ def init_routes(app, db):
 
             # Update the cart in the database
             db.cart_items.update_one({'user_id': user_id}, {'$set': {'items': cart['items']}})
+            update_total_price(user_id, db)
 
             return '', 200
         except Exception as e:
@@ -359,8 +367,194 @@ def init_routes(app, db):
 
             # Update the cart in the database
             db.cart_items.update_one({'user_id': user_id}, {'$set': {'items': cart['items']}})
+            update_total_price(user_id, db)
 
             return '', 200  # Empty response with status code 200
         except Exception as e:
             logging.error(f"Error removing item from cart: {e}")
             return jsonify({'error': str(e)}), 500
+    
+    def update_total_price(user_id, db):
+        pipeline = [
+            {
+                '$match': {'user_id': user_id}
+            },
+            {
+                '$addFields': {
+                    'total_price': {
+                        '$sum': {
+                            '$map': {
+                                'input': '$items',
+                                'as': 'item',
+                                'in': {
+                                    '$multiply': [
+                                        {'$toInt': '$$item.price'},
+                                        '$$item.quantity'
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                '$merge': {
+                    'into': 'cart_items',
+                    'whenMatched': 'replace'
+                }
+            }
+        ]
+        db.cart_items.aggregate(pipeline)
+
+
+    def get_user_by_email(email):
+        user_collection = db['users']
+        user = user_collection.find_one({'_id': email})
+        return user
+
+    @app.route('/home/checkout')
+    def checkout():
+        user_email = session.get('email')
+        if not user_email:
+            return redirect(url_for('login'))
+
+        user = get_user_by_email(user_email)
+        if not user:
+            return "User not found", 404
+
+        # Fetch the cart details
+        cart = db.cart_items.find_one({'user_id': user_email})
+        if not cart:
+            flash('Your cart is empty')
+            return ''
+
+        # Pass user details, shipping addresses, and cart total price to the template
+        shipping_addresses = user.get('shippingAddresses', [])
+        total_price = cart.get('total_price', 0)
+        
+        return render_template('checkout.html', user=user, shipping_addresses=shipping_addresses, total_price=total_price)
+
+
+    @app.route('/home/confirm_shipping', methods=['POST'])
+    def confirm_shipping():
+        data = request.json
+        user_id = data.get('userId')
+        address_id = data.get('addressId')
+
+        if not user_id or not address_id:
+            return jsonify({'error': 'Invalid data'}), 400
+
+        user_collection = db['users']
+        user_collection.update_one(
+            {'_id': user_id},
+            {'$set': {'selected_shipping_address': address_id}}
+        )
+
+        return jsonify({'message': 'Shipping address confirmed!'}), 200
+
+    # @app.route('/home/confirm_order', methods=['POST'])
+    # def confirm_order():
+    #     try:
+    #         data = request.json
+    #         token = data.get('stripeToken')
+    #         amount = int(data.get('amount'))
+
+    #         charge = stripe.Charge.create(
+    #             amount=amount,
+    #             currency='ind',
+    #             source=token,
+    #             description='Order from Online Bookstore'
+    #         )
+
+    #         return jsonify({'message': 'Payment successful!'}), 200
+    #     except Exception as e:
+    #         return jsonify({'error': str(e)}), 400
+    @app.route('/home/add_shipping_address', methods=['POST'])
+    def add_shipping_address():
+        try:
+            data = request.json
+            user_id = data.get('userId')
+            new_address = data.get('newAddress')
+
+            if not user_id or not new_address:
+                return jsonify({'error': 'Invalid data'}), 400
+
+            user_collection = db['users']
+            user = user_collection.find_one({'_id': user_id})
+            if not user:
+                return jsonify({'error': 'User not found'}), 404
+
+            address_id = str(ObjectId())
+            new_address['_id'] = address_id
+
+            user_collection.update_one(
+                {'_id': user_id},
+                {'$push': {'shippingAddresses': new_address}}
+            )
+
+            return jsonify({'message': 'Address added successfully', 'addressId': address_id}), 200
+
+        except Exception as e:
+            logging.error(f"Error adding new shipping address: {e}")
+            return jsonify({'error': 'An error occurred while adding the address'}), 500
+        
+    @ap.route('/home/confirm_order', methods=['POST'])
+    def confirm_order():
+        try:
+            data = request.json
+            user_id = data.get('userId')
+            stripe_token = data.get('stripeToken')
+            total_price = data.get('totalPrice')
+            shipping_address_id = data.get('shippingAddressId')
+            
+            logging.debug(f"Received order data: {data}")
+
+            if not user_id or not stripe_token or not total_price:
+                logging.error("Missing required order data")
+                return jsonify({'error': 'Invalid order data'}), 400
+
+            # Fetch cart items for the user
+            cart = db.cart_items.find_one({'user_id': user_id})
+            if not cart:
+                logging.error("Cart is empty")
+                return jsonify({'error': 'Cart is empty'})
+
+            # Create charge using Stripe API
+            try:
+                charge = stripe.Charge.create(
+                    amount=int(float(total_price) * 100),  # Convert to cents
+                    currency='inr',
+                    source=stripe_token,
+                    description='Order Payment',
+                )
+            except Exception as e:
+                logging.exception("Stripe charge failed")
+                return jsonify({'error': 'Payment failed: ' + str(e)})
+
+            # If payment is successful, save the order to the database
+            order_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
+            order_data = {
+                'order_id': order_id,
+                'user_id': ObjectId(user_id),
+                'total_price': float(total_price),
+                'order_date': datetime.now(),
+                'shipping_address_id': ObjectId(shipping_address_id) if shipping_address_id != 'new' else None,
+                'items': cart['items'],
+                'payment_status': 'paid',
+                'payment_details': charge
+            }
+
+            logging.debug(f"Order data to be inserted: {order_data}")
+
+            # Insert the order into the database
+            result = db.orders.insert_one(order_data)
+            logging.debug(f"Order insert result: {result.inserted_id}")
+
+            # Clear the user's cart
+            db.cart_items.delete_one({'user_id': user_id})
+
+            return jsonify({'success': 'Order placed successfully', 'order_id': order_id})
+
+        except Exception as e:
+            logging.exception("Error processing order")
+            return jsonify({'error': str(e)})

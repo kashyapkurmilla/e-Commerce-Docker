@@ -248,6 +248,8 @@
       padding: 0.75rem;
       border: 1px solid #d1d5db;
       border-radius: 0.5rem;
+      margin-bottom: 1.5rem;
+      font-size: 1rem;
     }
 
     .summary .total {
@@ -296,6 +298,20 @@
       position: fixed;
       bottom: 0;
       left: 0;
+    }
+
+    .discount-code-input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #d1d5db;
+      border-radius: 0.5rem;
+      margin-bottom: 1.5rem;
+      font-size: 1rem;
+    }
+
+    .total-price {
+      font-size: 1.5rem;
+      text-align: right;
     }
   </style>
 </head>
@@ -368,19 +384,17 @@
       </div>
       <div class="form-group">
         <p>SHIPPING</p>
-        <select>
+        <select class="summary-input shipping-dropdown">
           <option class="text-muted">Standard-Delivery - Rs.15.70</option>
         </select>
       </div>
       <div class="form-group">
         <p>GIVE CODE</p>
-        <input id="code" placeholder="Enter your code">
+        <input id="code" class="summary-input discount-code-input" placeholder="Enter your code">
       </div>
-      <div class="total">
-        <div>TOTAL PRICE</div>
-        <div>Rs.{{ total_price + 15.70 }}</div>
-      </div>
-      <button class="btn-checkout">CHECKOUT</button>
+      <div class="total-price">Rs.{{ total_price + 15.70 }}</div>
+      <button class="btn-checkout" onclick="window.location.href='/home/checkout'">CHECKOUT</button>
+
     </div>
   </div>
 
@@ -511,8 +525,6 @@
           alert('Failed to remove item from cart. Please try again later.');
         });
     }
-
-
   </script>
 </body>
 
