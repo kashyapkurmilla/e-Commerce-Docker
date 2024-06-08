@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-server
+  labels:
+    app: python-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: python-server
+  template:
+    metadata:
+      labels:
+        app: python-server
+    spec:
+      containers:
+      - name: python-server
+        image: bookstore/python-server:latest
+        ports:
+        - containerPort: 8082
+        env:
+        - name: MONGO_URI
+          value: "mongodb://kashyap:password@mongo:27017/bookstore"
+        - name: MINIO_URL
+          value: "http://minio:9000"
+        - name: MINIO_ACCESS_KEY
+          value: "kashyap"
+        - name: MINIO_SECRET_KEY
+          value: "password"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: python-server-service
+spec:
+  selector:
+    app: python-server
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8082
+  type: LoadBalancer
