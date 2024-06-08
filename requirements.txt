@@ -2,5 +2,4 @@ Flask==2.0.1
 Werkzeug==2.0.2
 pymongo==3.12.0
 bcrypt
-stripe
 datetime
