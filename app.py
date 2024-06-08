@@ -5,7 +5,6 @@ from bookstore.database import init_db
 app = Flask(__name__)
 app.secret_key = 'password'
   
-
 # Initialize database
 db = init_db(app)
 
