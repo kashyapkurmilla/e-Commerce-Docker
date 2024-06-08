@@ -424,15 +424,16 @@ def init_routes(app, db):
 
         # Fetch the cart details
         cart = db.cart_items.find_one({'user_id': user_email})
-        if not cart:
+        if not cart or not cart.get('items'):
             flash('Your cart is empty')
-            return ''
+            return redirect(url_for('view_cart'))
 
         # Pass user details, shipping addresses, and cart total price to the template
         shipping_addresses = user.get('shippingAddresses', [])
         total_price = cart.get('total_price', 0)
         
         return render_template('checkout.html', user=user, shipping_addresses=shipping_addresses, total_price=total_price)
+
 
     @app.route('/home/save_address', methods=['POST'])
     def save_address():

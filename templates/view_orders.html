@@ -10,34 +10,195 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <!-- Your custom CSS styles -->
     <style>
-        /* Add your custom styles here */
+            body {
+      background: #f3f4f6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Roboto', sans-serif;
+      font-size: 0.9rem;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: white;
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .logo img {
+      width: 50px;
+      height: 50px;
+      margin-right: 10px;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 2.5em;
+    }
+
+    .nav-link {
+      text-decoration: none;
+      color: #333;
+      font-size: 1rem;
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-link i {
+      margin-right: 8px;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -3px;
+      left: 50%;
+      background-color: black;
+      transition: width 0.3s, left 0.3s;
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+      left: 0;
+    }
+
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      right: 0;
+      background-color: #f9f9f9;
+      min-width: 200px;
+      box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+      z-index: 1;
+      margin-top: 10px;
+      border-radius: 8px;
+    }
+
+    .dropdown-content a {
+      color: black;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      position: relative;
+    }
+
+    .dropdown-content a i {
+      margin-right: 8px;
+    }
+
+    .dropdown-content a::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -3px;
+      left: 50%;
+      background-color: black;
+      transition: width 0.3s, left 0.3s;
+    }
+
+    .dropdown-content a:hover {
+      background-color: #d4cbcb;
+    }
+
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .order-card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .order-card h2 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .order-card p {
+            margin-bottom: 5px;
+        }
+        .footer {
+      text-align: center;
+      width: 100%;
+      padding: 1rem;
+      background-color: white;
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+      position: fixed;
+      bottom: 0;
+      left: 0;
+    }
     </style>
 </head>
 
-<body class="bg-gray-100">
+<body>
     <!-- Header section -->
-    <header class="bg-white shadow-lg">
-        <div class="container mx-auto py-4 px-8">
-            <h1 class="text-xl font-bold text-gray-800">Online Bookstore</h1>
-            <!-- Navigation links -->
-            <nav class="flex justify-end items-center">
-                <a href="/" class="text-gray-600 hover:text-blue-500 mx-2">Home</a>
-                <a href="/home/edit_account" class="text-gray-600 hover:text-blue-500 mx-2">Edit Account</a>
-                <a href="/home/change_password" class="text-gray-600 hover:text-blue-500 mx-2">Change Password</a>
-                <a href="/home/view_orders" class="text-gray-600 hover:text-blue-500 mx-2">View Orders</a>
-                <a href="/" onclick="confirmLogout()" class="text-gray-600 hover:text-red-500 mx-2">Logout</a>
-            </nav>
+    <header class="header">
+        <div class="logo">
+            <img src="http://localhost:9000/products/products/logo.png" alt="Logo">
+            Online Bookstore
         </div>
+        <nav class="nav">
+            <a href="/home" class="nav-link"><i class="fas fa-home"></i> Home</a>
+            <div class="dropdown">
+                <a href="#" class="nav-link" onclick="toggleDropdown(event)"><i class="fas fa-user"></i> My Account</a>
+                <div class="dropdown-content">
+                    <a href="/home/edit_account"><i class="fas fa-edit"></i> Edit Account</a>
+                    <a href="/home/change_password"><i class="fas fa-key"></i> Change Password</a>
+                    <a href="/home/view_cart" ><i class="fas fa-shopping-cart"></i> View Cart</a>
+                    <a href="#" onclick="confirmLogout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
+            </div>
+        </nav>
     </header>
-
     <!-- Main content section -->
     <div class="container mx-auto mt-10">
         <h1 class="text-3xl font-bold mb-6">Your Orders</h1>
         <!-- Iterate over orders and display them -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {% for order in orders %}
-            <div class="border rounded-lg p-4">
-                <h2 class="text-lg font-semibold mb-2">Order ID: {{ order._id }}</h2>
+            <div class="order-card">
+                <h2>Order ID: {{ order._id }}</h2>
                 <p><strong>Total Price:</strong> Rs.{{ order.totalPrice }}</p>
                 <p><strong>Order Status:</strong> {{ order.orderStatus }}</p>
                 <p><strong>Shipping Address:</strong> {{ order.shippingAddress.street1 }}, {{ order.shippingAddress.city }},
@@ -48,22 +209,13 @@
             {% endfor %}
         </div>
     </div>
-
     <!-- Footer section -->
-    <footer class="bg-white py-4 shadow-lg mt-10">
-        <div class="container mx-auto text-center text-gray-600">
-            <p>&copy; 2024 Online Bookstore. All rights reserved.</p>
-        </div>
+    <footer class="footer">
+        <p>© 2024 Online Bookstore. All rights reserved.</p>
     </footer>
-
     <!-- Include your JavaScript scripts -->
     <script>
         // Add your JavaScript code here
-        function confirmLogout() {
-            if (confirm('Online Bookstore isn\'t the same without you. Are you sure you want to logout?')) {
-                window.location.href = "/";
-            }
-        }
     </script>
 </body>
 
