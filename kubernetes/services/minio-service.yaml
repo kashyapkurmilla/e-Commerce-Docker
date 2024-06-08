@@ -17,3 +17,5 @@ spec:
       name: minio-console
   selector:
     app: minio
+
+
