@@ -133,7 +133,6 @@
             display: flex;
             flex-direction: row;
             justify-content: space-between;
-            /* Increased width */
             max-width: 1200px;
             margin: 50px auto;
             padding: 20px;
@@ -150,16 +149,9 @@
 
         .payment-details {
             background-color: #fff;
-            ;
-            /* Adjust color as needed */
         }
 
-        .shipping-address h2 {
-            margin-top: 0;
-            margin-bottom: 20px;
-            font-size: 24px;
-        }
-
+        .shipping-address h2,
         .payment-details h2 {
             margin-top: 0;
             margin-bottom: 20px;
@@ -172,7 +164,6 @@
 
         .address-option input {
             display: none;
-            /* Hide the radio buttons */
         }
 
         .address-label {
@@ -192,13 +183,11 @@
 
         .address-label input:checked+.address-content {
             background-color: #28a745;
-            /* Change color to indicate selection */
             color: #fff;
         }
 
         .address-label input:checked+.address-content::before {
             content: '✔';
-            /* Display a checkmark icon when selected */
             margin-right: 5px;
         }
 
@@ -220,6 +209,7 @@
             color: #fff;
             padding: 10px 20px;
             border: none;
+            width: auto;
             border-radius: 5px;
             cursor: pointer;
             margin-top: 85px;
@@ -242,6 +232,113 @@
         .add-btn:hover {
             background-color: #218838;
         }
+
+        .toggle_radio {
+            position: relative;
+            background: rgba(255, 255, 255, .1);
+            margin: 4px auto;
+            margin-left: 170px;
+            overflow: hidden;
+            padding: 0 !important;
+            border-radius: 50px;
+            position: relative;
+            height: 36px;
+            width: 438px;
+            display: flex;
+        }
+
+        .toggle_radio input[type=radio] {
+            display: none;
+        }
+
+        .toggle_radio label {
+            font: 90%/1.618 "Source Sans Pro";
+            color: rgba(255, 255, 255, .9);
+            display: block;
+            width: 138px;
+            height: 30px;
+            margin: 3px;
+            border-radius: 50px;
+            cursor: pointer;
+            text-align: center;
+            line-height: 30px;
+            background: #007bff;
+            transition: background 0.4s;
+        }
+
+        .toggle_radio label:hover {
+            background-color: #0056b3;
+        }
+
+        .toggle_option_slider {
+            width: 138px;
+            height: 30px;
+            position: absolute;
+            top: 3px;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, .3);
+            transition: all .4s ease;
+        }
+
+        #first_toggle:checked~.toggle_option_slider {
+            left: 3px;
+        }
+
+        #second_toggle:checked~.toggle_option_slider {
+            left: 149px;
+        }
+
+        #third_toggle:checked~.toggle_option_slider {
+            left: 295px;
+        }
+
+        .payment-option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .payment-option input {
+            display: none;
+        }
+
+        .payment-option label {
+            cursor: pointer;
+            padding: 10px;
+            border: 2px solid #007bff;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .payment-option label:hover {
+            background-color: #0056b3;
+        }
+
+        .payment-option input:checked+label {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .payment-option label span {
+            margin-left: 10px;
+        }
+
+        .payment-form {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .qr-code {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .qr-code img {
+            max-width: 200px;
+            margin-left: 13rem;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 
@@ -253,12 +350,11 @@
         </div>
         <nav class="nav">
             <a href="/home" class="nav-link"><i class="fas fa-home"></i> Home</a>
-            <a href="/home/view_cart" class="nav-link"><i class="fas fa-shopping-cart"></i> View
-                Cart</a>
+            <a href="/home/view_cart" class="nav-link"><i class="fas fa-shopping-cart"></i> View Cart</a>
             <div class="dropdown">
-                <a href="#" class="nav-link" onclick="toggleDropdown(event)"><i class="fas fa-user"></i> My Account</a>
+                <button class="nav-link"><i class="fas fa-user"></i> Account</button>
                 <div class="dropdown-content">
-                    <a href="/home/edit_account"><i class="fas fa-edit"></i> Edit Account</a>
+                    <a href="/home/view_profile"><i class="fas fa-user-circle"></i> View Profile</a>
                     <a href="/home/change_password"><i class="fas fa-key"></i> Change Password</a>
                     <a href="/home/view_orders"><i class="fas fa-box"></i> View Orders</a>
                     <a href="#" onclick="confirmLogout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
@@ -296,6 +392,7 @@
             <div class="new-address-form" id="new-address-form" style="display: none;">
                 <h3>Add New Address</h3>
                 <form id="new-address-form">
+                    <input type="text" id="AddressId" name="AddressId" placeholder="Address Number" required>
                     <input type="text" id="new-street1" name="street1" placeholder="Street 1" required>
                     <input type="text" id="new-street2" name="street2" placeholder="Street 2">
                     <input type="text" id="new-city" name="city" placeholder="City" required>
@@ -310,69 +407,80 @@
         <div class="payment-details">
             <h2>Payment Details</h2>
             <p>Total Price: Rs.{{ total_price }}</p>
-            <div class="payment-details">
-                <form id="payment-form">
-                    <div id="card-element"></div>
-                    <button class="pay-btn" id="submit">Checkout</button>
+            <div class="toggle_radio">
+                <input type="radio" id="first_toggle" name="payment-method" value="cash" checked>
+                <label for="first_toggle">Cash on Delivery</label>
+                <input type="radio" id="second_toggle" name="payment-method" value="online">
+                <label for="second_toggle">Online Payment</label>
+                <div class="toggle_option_slider"></div>
+            </div>
+
+            <!-- Payment Form for Online Payment -->
+            <div class="payment-form" id="payment-form">
+                <form>
+                    <input type="text" id="card-number" name="card-number" placeholder="Card Number" required>
+                    <input type="text" id="cvv" name="cvv" placeholder="CVV" required>
+                    <input type="text" id="expiry" name="expiry" placeholder="MM/YY" required>
                 </form>
             </div>
+
+            <!-- QR Code for Cash on Delivery -->
+            <div class="qr-code" id="qr-code">
+                <img src="http://localhost:9000/products/cart related/qr.jpeg" alt="QR Code">
+                <p>Pay to this QR code on delivery or give cash.</p>
+            </div>
+
+            <button class="pay-btn" id="submit">Confirm Order</button>
         </div>
     </div>
 
-    <script src="https://js.stripe.com/v3/"></script>
     <script>
-        var stripe = Stripe('your-public-key'); // Replace with your actual Stripe public key
-        var elements = stripe.elements();
-        var cardElement = elements.create('card');
-        cardElement.mount('#card-element');
+        const newAddressRadio = document.getElementById('new-address');
+        const newAddressForm = document.getElementById('new-address-form');
 
-        var form = document.getElementById('payment-form');
-        form.addEventListener('submit', async function (event) {
-            event.preventDefault();
-            const { token, error } = await stripe.createToken(cardElement);
-            if (error) {
-                console.error(error);
-            } else {
-                var selectedAddress = document.querySelector('input[name="shipping-address"]:checked').value;
-                var orderDetails = {
-                    userId: '{{ user._id }}',
-                    stripeToken: token.id,
-                    totalPrice: '{{ total_price }}',
-                    shippingAddressId: selectedAddress,
-                };
-
-                fetch('/home/confirm_order', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(orderDetails),
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.error) {
-                            console.error(data.error);
-                        } else {
-                            alert('Payment successful!');
-                        }
-                    })
-                    .catch(error => console.error(error));
+        newAddressRadio.addEventListener('change', () => {
+            if (newAddressRadio.checked) {
+                newAddressForm.style.display = 'block';
             }
         });
 
-        var shippingAddressForm = document.getElementById('shipping-address-form');
-        shippingAddressForm.addEventListener('change', function () {
-            var selectedAddress = document.querySelector('input[name="shipping-address"]:checked').value;
-            if (selectedAddress === 'new') {
-                document.getElementById('new-address-form').style.display = 'block';
-            } else {
-                document.getElementById('new-address-form').style.display = 'none';
+        document.querySelectorAll('input[name="shipping-address"]').forEach(radio => {
+            if (radio.id !== 'new-address') {
+                radio.addEventListener('change', () => {
+                    newAddressForm.style.display = 'none';
+                });
             }
         });
 
-        var saveAddressBtn = document.getElementById('save-address-btn');
-        saveAddressBtn.addEventListener('click', function () {
-            var newAddress = {
+        const paymentMethodRadios = document.querySelectorAll('input[name="payment-method"]');
+        const paymentForm = document.getElementById('payment-form');
+        const qrCode = document.getElementById('qr-code');
+
+        paymentMethodRadios.forEach(radio => {
+            radio.addEventListener('change', () => {
+                if (radio.value === 'online') {
+                    paymentForm.style.display = 'block';
+                    qrCode.style.display = 'none';
+                } else if (radio.value === 'cash') {
+                    paymentForm.style.display = 'none';
+                    qrCode.style.display = 'block';
+                }
+            });
+        });
+
+        // Initialize the display based on the default checked payment method
+        if (document.getElementById('second_toggle').checked) {
+            paymentForm.style.display = 'block';
+            qrCode.style.display = 'none';
+        } else {
+            paymentForm.style.display = 'none';
+            qrCode.style.display = 'block';
+        }
+
+        // Add event listener for the "Save Address" button
+        document.getElementById('save-address-btn').addEventListener('click', () => {
+            const newAddressData = {
+                AddressId: document.getElementById('AddressId').value,
                 street1: document.getElementById('new-street1').value,
                 street2: document.getElementById('new-street2').value,
                 city: document.getElementById('new-city').value,
@@ -380,47 +488,69 @@
                 zip: document.getElementById('new-zip').value,
                 country: document.getElementById('new-country').value,
             };
-            fetch('/home/add_shipping_address', {
+
+            fetch('/home/save_address', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    userId: '{{ user._id }}',
-                    newAddress: newAddress,
-                }),
+                body: JSON.stringify(newAddressData)
             })
                 .then(response => response.json())
                 .then(data => {
-                    if (data.error) {
-                        console.error(data.error);
+                    if (data.success) {
+                        alert('Address saved successfully');
+                        // Optionally, update the UI with the new address
+                        location.reload(); // Reload to show the new address in the list
                     } else {
-                        alert('New address added successfully!');
-                        location.reload();
+                        alert('Error saving address: ' + data.error);
                     }
                 })
-                .catch(error => console.error(error));
+                .catch(error => {
+                    console.error('Error:', error);
+                });
         });
+        document.getElementById('submit').addEventListener('click', () => {
+            const paymentMethod = document.querySelector('input[name="payment-method"]:checked').value;
+            let cardDetails = null;
 
-        function toggleDropdown(event) {
-            event.stopPropagation();
-            var dropdown = event.target.nextElementSibling;
-            var isOpen = dropdown.style.display === 'block';
-            closeAllDropdowns();
-            dropdown.style.display = isOpen ? 'none' : 'block';
-        }
-
-        function closeAllDropdowns() {
-            var dropdowns = document.querySelectorAll('.dropdown-content');
-            dropdowns.forEach(function (dropdown) {
-                dropdown.style.display = 'none';
-            });
-        }
-
-        document.addEventListener('click', function (event) {
-            if (!event.target.matches('.nav-link')) {
-                closeAllDropdowns();
+            if (paymentMethod === 'online') {
+                cardDetails = {
+                    cardNumber: document.getElementById('card-number').value,
+                    cvv: document.getElementById('cvv').value,
+                    expiry: document.getElementById('expiry').value
+                };
             }
+
+
+            const checkoutData = {
+                total_price: parseFloat(document.querySelector('.payment-details p').textContent.split('Rs.')[1]),
+                discount_code: '',  // You can retrieve this from the form if needed
+                cart_items: [],     // You can retrieve this from the form if needed
+                shipping_address_id: document.querySelector('input[name="shipping-address"]:checked').value,
+                payment_method: paymentMethod,
+                card_details: cardDetails
+            };
+
+            fetch('/home/checkout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(checkoutData)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Order placed successfully! Tracking ID: ' + data.tracking_id);
+                        window.location.href = "/home/ViewOrders";
+                    } else {
+                        alert('Error placing order: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
         });
     </script>
 </body>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Orders</title>
+    <!-- Include CSS styles -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- Your custom CSS styles -->
+    <style>
+        /* Add your custom styles here */
+    </style>
+</head>
+
+<body class="bg-gray-100">
+    <!-- Header section -->
+    <header class="bg-white shadow-lg">
+        <div class="container mx-auto py-4 px-8">
+            <h1 class="text-xl font-bold text-gray-800">Online Bookstore</h1>
+            <!-- Navigation links -->
+            <nav class="flex justify-end items-center">
+                <a href="/" class="text-gray-600 hover:text-blue-500 mx-2">Home</a>
+                <a href="/home/edit_account" class="text-gray-600 hover:text-blue-500 mx-2">Edit Account</a>
+                <a href="/home/change_password" class="text-gray-600 hover:text-blue-500 mx-2">Change Password</a>
+                <a href="/home/view_orders" class="text-gray-600 hover:text-blue-500 mx-2">View Orders</a>
+                <a href="/" onclick="confirmLogout()" class="text-gray-600 hover:text-red-500 mx-2">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main content section -->
+    <div class="container mx-auto mt-10">
+        <h1 class="text-3xl font-bold mb-6">Your Orders</h1>
+        <!-- Iterate over orders and display them -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for order in orders %}
+            <div class="border rounded-lg p-4">
+                <h2 class="text-lg font-semibold mb-2">Order ID: {{ order._id }}</h2>
+                <p><strong>Total Price:</strong> Rs.{{ order.totalPrice }}</p>
+                <p><strong>Order Status:</strong> {{ order.orderStatus }}</p>
+                <p><strong>Shipping Address:</strong> {{ order.shippingAddress.street1 }}, {{ order.shippingAddress.city }},
+                    {{ order.shippingAddress.province }}, {{ order.shippingAddress.country }}</p>
+                <p><strong>Payment Method:</strong> {{ order.paymentMethod }}</p>
+                <!-- Add more order details as needed -->
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Footer section -->
+    <footer class="bg-white py-4 shadow-lg mt-10">
+        <div class="container mx-auto text-center text-gray-600">
+            <p>&copy; 2024 Online Bookstore. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Include your JavaScript scripts -->
+    <script>
+        // Add your JavaScript code here
+        function confirmLogout() {
+            if (confirm('Online Bookstore isn\'t the same without you. Are you sure you want to logout?')) {
+                window.location.href = "/";
+            }
+        }
+    </script>
+</body>
+
+</html>
