@@ -59,6 +59,5 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## Acknowledgements
 - This project was inspired by various online bookstore platforms and Flask tutorials.
-```
 
 Feel free to customize it further to match your project's specific details and requirements!
